@@ -1,5 +1,6 @@
-import type { PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { Mesh, type PerspectiveCamera, type Scene, type WebGLRenderer } from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GUI } from 'dat.gui';
 
 import { createScene } from "./components/scene";
 import { createCamera } from "./components/camera";
@@ -18,6 +19,7 @@ export class Model {
   private readonly renderer: WebGLRenderer;
   private readonly loop: Loop;
   private readonly controls: OrbitControls;
+  private readonly gui = new GUI();
 
   constructor(container: HTMLElement) {
     if (!container) {
@@ -49,6 +51,8 @@ export class Model {
     }
 
     this.scene.add(createAxesHelper(), /**createGridHelper() */);
+    // 默认隐藏调试控制器
+    this.gui.hide();
   }
 
   /**
@@ -73,12 +77,33 @@ export class Model {
   }
 
   public async init() {
-    const { parrot, flamingo, stork } = await loadBirds();
+    const { parrot, flamingo, stork } = await loadBirds(this.gui);
 
     this.controls.target.copy(parrot.position); // 把目标移到前鸟的中心
 
     this.loop.updatables.push(parrot, flamingo, stork);
     this.scene.add(parrot, flamingo, stork);
+  }
+
+  /**
+   * 执行销毁方法
+   */
+  public dispose() {
+    // TODO: 补充更多需要销毁或者释放的方法
+    this.gui.close();
+    this.gui.destroy();
+    // 销毁场景中的对象
+    while (this.scene.children.length) {
+      const child = this.scene.children[0];
+      this.scene.remove(child);
+      // 进行特定对象的清理
+      if (child instanceof Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    }
+    // 销毁渲染器等
+    this.renderer.dispose();
   }
 }
 
