@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<style>
+  svg {
+    background-color: antiquewhite;
+  }
+</style>
+
+<body>
+
+  <svg></svg>
+
+  <script src="https://unpkg.com/d3@7.6.1/dist/d3.min.js"></script>
+  <script>
+    var svg = d3.select('svg').attr('width', 600).attr('height', 600);
+    //数据
+    var data = [{
+      key: '语文',
+      value: 90
+    },
+    {
+      key: '数学',
+      value: 86
+    },
+    {
+      key: '英语',
+      value: 99
+    },
+    {
+      key: '物理',
+      value: 80
+    },
+    {
+      key: '化学',
+      value: 70
+    },
+    {
+      key: '生物',
+      value: 97
+    },
+    {
+      key: '地理',
+      value: 86
+    },
+    {
+      key: '政治',
+      value: 92
+    }
+    ];
+
+    var axi_circle_point_num = 8; //极坐标每一圈的点数
+    var axi_circle_num = 4; //坐标画几个圈
+    var axi_circle_step = 40; //坐标轴的每一步长度
+    let angles = d3.range(0, 2 * Math.PI, 2 * Math.PI / axi_circle_point_num);
+    let scale = d3.scaleLinear().domain([0, 100]).range([0, axi_circle_num * axi_circle_step]); //[0-100]分，对应极坐标轴
+
+    //画背景的圈圈
+    for (var i = 1; i <= axi_circle_num; i++) {
+      //画每一个圈
+      let lin = d3.lineRadial()
+        .curve(d3.curveLinearClosed)
+        .angle((d) => {
+          return d
+        })
+        .radius((d) => {
+
+          return axi_circle_step * i;
+        })
+      svg.append('g')
+        .attr("transform", "translate(200,200)")
+        .append('path')
+        .attr('d', lin(angles))
+        .attr("stroke", "#ccc")
+        .attr("stroke-width", 2)
+        // .attr('stroke-dasharray', '10 5')
+        .attr("fill", "none")
+    }
+
+    //绘制线条
+    svg.append('g')
+      .attr("transform", "translate(200,200)")
+      .selectAll('polyline')
+      .data(angles)
+      .enter()
+      .append('polyline')
+      .attr('points', function (d, i) {
+        let r = axi_circle_num * axi_circle_step,
+          x = r * Math.cos(d),
+          y = r * Math.sin(d);
+        return `0,0 ${x},${y}`
+      })
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 2)
+      // .attr('stroke-dasharray', '10 5')
+
+    //绘制文字
+    svg.append('g')
+      .attr("transform", "translate(200,200)")
+      .selectAll('text')
+      .data(angles)
+      .enter()
+      .append('text')
+      .text(function (d, i) {
+
+        return data[i].key;
+      })
+      .attr('transform', function (d, i) {
+        let r = axi_circle_num * axi_circle_step,
+          x = r * Math.cos(d),
+          y = r * Math.sin(d);
+        if ((d > Math.PI / 2) && (d < Math.PI * 3 / 2)) {
+          x -= 10;
+        } else if (d == Math.PI * 3 / 2) {
+          y -= 10;
+        } else if (d == Math.PI / 2) {
+          y += 20;
+        } else {
+          x += 10;
+        }
+        return `translate(${x},${y})`;
+      })
+      .attr('text-anchor', function (d, i) {
+        if ((d > Math.PI / 2) && (d < Math.PI * 3 / 2)) {
+          return 'end';
+        } else if ((d == Math.PI / 2) || (d == Math.PI * 3 / 2)) {
+          return 'middle';
+        } else {
+          return 'start';
+        }
+
+      })
+      .attr("stroke", "blue")
+
+    //绘制点
+    svg.append('g')
+      .attr("transform", "translate(200,200)")
+      .selectAll('circle')
+      .data(angles)
+      .enter()
+      .append('circle').attr('cx', function (d, i) {
+        let x = scale(data[i].value) * Math.cos(d);
+        return x;
+      }).attr('cy', function (d, i) {
+
+        let y = scale(data[i].value) * Math.sin(d);
+        return y;
+      }).attr('r', 5).attr('fill', 'blue')
+
+    //数据绘制
+    let lin = d3.lineRadial()
+      .curve(d3.curveLinearClosed)
+      .angle((d) => {
+        return d;
+      })
+      .radius((d, i) => {
+
+        return scale(data[i].value);
+      })
+    svg.append('g')
+      .attr("transform", "translate(200,200) rotate(90)")
+      .append('path')
+      .attr('d', lin(angles))
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2)
+      .attr("fill", "rgba(0,0,255,.1)")
+
+  </script>
+</body>
+
+</html>

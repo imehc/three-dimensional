@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>画一个折线图</title>
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+	</head>
+	<style type="text/css">
+		body {
+			height: 100%;
+		}
+
+		.title {
+			font-family: Arial, 微软雅黑;
+			font-size: 18px;
+			text-anchor: middle;
+		}
+
+		.subTitle {
+			font-family: Arial, 宋体;
+			font-size: 12px;
+			text-anchor: middle;
+			fill: #666
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: black;
+			shape-rendering: crispEdges;
+		}
+
+		.axis text {
+			font-family: sans-serif;
+			font-size: 11px;
+			fill: #999;
+		}
+
+		.inner_line path,
+		.inner_line line {
+			fill: none;
+			stroke: #ccc;
+			shape-rendering: crispEdges;
+		}
+
+		.legend {
+			font-size: 12px;
+			font-family: Arial, Helvetica, sans-serif
+		}
+	</style>
+	<div id='tooltip' style='position:absolute;background-color:lightgray;padding:5px;display:none'></div>
+	<body>
+		<script type="text/javascript">
+			var dataset = [];
+			var lines = []; //保存折线图对象
+			//var xMarks = [];
+			var lineNames = []; //保存系列名称
+			var lineColor = ["red", "blue", "green", 'black'];
+			var w = 1000;
+			var h = 400;
+			var padding = 40;
+			var currentLineNum = 0;
+
+			//用一个变量存储标题和副标题的高度，如果没有标题什么的，就为0
+			var head_height = padding;
+			var title = "收支平衡统计图";
+			var subTitle = "2013年1月 至 2013年6月";
+
+			//用一个变量计算底部的高度，如果不是多系列，就为0
+			var foot_height = padding;
+			
+			var currentTransform;//当前的缩放
+
+			//模拟数据
+			getData();
+
+			//保存数组长度，也就是系列的个数
+			currentLineNum = dataset.length;
+
+			//图例的预留位置
+			foot_height += 25;
+
+			//定义画布
+			var svg = d3.select("body")
+				.append("svg")
+				.attr("width", w)
+				.attr("height", h)
+				.on('mousemove', drawTooltip)
+				.on('mouseout', removeTooltip);
+
+
+			const tooltip = d3.select('#tooltip');
+			const tooltipLine = svg.append('line');
+
+			function removeTooltip() {
+				if (tooltip) tooltip.style('display', 'none');
+				if (tooltipLine) tooltipLine.attr('stroke', 'none');
+			}
+
+			function drawTooltip() {
+
+				var x=d3.mouse(svg.node())[0];
+				10
+				if(x<padding||x>w-padding){
+					return false;
+				}
+				
+				if (currentTransform)
+					var time = currentTransform.rescaleX(xScale).invert(d3.mouse(svg.node())[0]);
+				else
+					var time = xScale.invert(d3.mouse(svg.node())[0]);
+
+
+				if (d3.timeFormat('%H')(new Date(time)) > 12) {
+					var roundTime = d3.timeFormat('%Y-%m-%d')(new Date(+time + 12 * 3600 * 1000))
+				} else {
+					var roundTime = d3.timeFormat('%Y-%m-%d')(new Date(+time))
+				}
+				var splitTime = roundTime.split('-')
+
+				var day = new Date(splitTime[0], splitTime[1] - 1, splitTime[2])
+
+
+				if (currentTransform)
+					tooltipLine
+					.attr('stroke', 'black')
+					.attr("clip-path", "url(#clip)")
+					.attr('x1', currentTransform.applyX(xScale(day)))
+					.attr('x2', currentTransform.applyX(xScale(day)))
+					.attr('y1', head_height)
+					.attr('y2', h - foot_height);
+				else
+					tooltipLine
+					.attr('stroke', 'black')
+					.attr("clip-path", "url(#clip)")
+					.attr('x1', xScale(day))
+					.attr('x2', xScale(day))
+					.attr('y1', head_height)
+					.attr('y2', h - foot_height);
+
+
+				tooltip.html(roundTime)
+					.style('display', 'block')
+					.style('left', d3.event.pageX + 20 + 'px')
+					.style('top', d3.event.pageY - 20 + 'px')
+					.selectAll()
+					.data(dataset).enter()
+					.append('div')
+					.style('color', function(d, i) {
+						return lineColor[i]
+					})
+					.html(function(d, i) {
+						var target=d.find(function(item) {
+							return +item.time == +day;
+						});
+						if(target){
+						  return lineNames[i] + ':' + target.value;
+						}
+					});
+				// d => d.name + ': ' + d.history.find(h => h.year == year).population
+			}
+
+
+			//添加标题
+			if (title != "") {
+				svg.append("g")
+					.append("text")
+					.text(title)
+					.attr("class", "title")
+					.attr("x", w / 2)
+					.attr("y", head_height);
+
+				head_height += 30;
+			}
+
+			//添加副标题
+			if (subTitle != "") {
+				svg.append("g")
+					.append("text")
+					.text(subTitle)
+					.attr("class", "subTitle")
+					.attr("x", w / 2)
+					.attr("y", head_height);
+
+				head_height += 20;
+			}
+
+			maxdata = getMaxdata(dataset);
+
+			console.log(maxdata, h - foot_height, head_height)
+
+			var t_max_min = d3.extent(dataset[0], function(d) {
+				return d.time;
+			});
+
+			var xTicks = Math.min(dataset[0].length, 10),
+				scaleMax = Math.max(1, ((t_max_min[1] - t_max_min[0]) / (24 * 3600 * 1000)) / xTicks);
+
+			var timeFormat = d3.timeFormat('%Y-%m-%d');
+
+			//横坐标轴比例尺
+			var xScale = d3.scaleTime()
+				.domain(t_max_min)
+				.range([padding, w - padding]);
+
+			//纵坐标轴比例尺
+			var yScale = d3.scaleLinear()
+				.domain([0, maxdata])
+				.range([h - foot_height, head_height]);
+
+			var zoom = d3.zoom()
+				.scaleExtent([1, scaleMax])
+				.translateExtent([
+					[padding, 0],
+					[w - padding, h]
+				])
+				.extent([
+					[padding, 0],
+					[w - padding, h]
+				])
+				.on("zoom", zoomed);
+			svg.call(zoom);
+
+			//添加遮罩
+			svg.append("defs").append("clipPath")
+				.attr("id", "clip")
+				.append("rect")
+				
+				.attr('x', padding)
+				.attr('y', 0)
+				.attr("width", w - 2 * padding)
+				.attr("height", h);
+
+			//定义横轴网格线
+			var xInner = d3.axisBottom()
+				.scale(xScale)
+				.tickSize(-(h - head_height - foot_height), 0, 0)
+				.tickFormat("")
+				.ticks(xTicks);
+
+			//添加横轴网格线
+			var xInnerBar = svg.append("g")
+				.attr("class", "inner_line inner_line_x")
+				.attr("transform", "translate(0," + (h - foot_height) + ")")
+				.call(xInner);
+
+			//定义纵轴网格线
+			var yInner = d3.axisLeft()
+				.scale(yScale)
+				.tickSize(-(w - padding * 2), 0, 0)
+				.tickFormat("")
+				.ticks(10);
+
+			//添加纵轴网格线
+			var yInnerBar = svg.append("g")
+				.attr("class", "inner_line inner_line_y")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yInner);
+
+			//定义横轴
+			var xAxis = d3.axisBottom()
+				.scale(xScale)
+				.ticks(xTicks)
+				.tickFormat(timeFormat)
+
+			//添加横坐标轴
+			var xBar = svg.append("g")
+				.attr("class", "bottom_axis")
+				.attr("transform", "translate(0," + (h - foot_height) + ")")
+				.call(xAxis).selectAll("text")
+				.attr("transform", "translate(-10,20) rotate(-20)")
+
+			//通过编号获取对应的横轴标签
+			// xBar.selectAll("text")
+			// 	.text(function(d) {
+			// 		return xMarks[d];
+			// 	});
+
+			//定义纵轴
+			var yAxis = d3.axisLeft()
+				.scale(yScale)
+
+			//添加纵轴
+			var yBar = svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yAxis);
+
+			//添加图例
+			var legend = svg.append("g");
+
+			addLegend();
+
+			//添加折线
+			lines = [];
+			for (var i = 0; i < currentLineNum; i++) {
+				var newLine = new CrystalLineObject();
+				newLine.init(i);
+				lines.push(newLine);
+			}
+			
+			
+
+			function zoomed() {
+				var t = d3.event.transform;
+				var xt = t.rescaleX(xScale);
+
+				svg.select('.bottom_axis').call(xAxis.scale(xt)).selectAll("text")
+					.attr("transform", "translate(-10,20) rotate(-20)");
+
+				svg.select('.inner_line_x').call(xInner.scale(xt));
+
+				for (var i = 0; i < lines.length; i++) {
+					var lineObject = lines[i];
+					lineObject.scale(i, 0, t);
+				}
+
+			}
+
+			//重新作图
+			function drawChart() {
+				var _duration = 1000;
+				
+				
+				
+				getData();
+				
+				svg.transition().duration(_duration).call(zoom.transform, d3.zoomIdentity);
+				
+
+				
+				
+				var t_max_min = d3.extent(dataset[0], function(d) {
+					return d.time;
+				});
+				
+				var xTicks = Math.min(dataset[0].length, 10),
+					scaleMax = Math.max(1, ((t_max_min[1] - t_max_min[0]) / (24 * 3600 * 1000)) / xTicks);
+				
+				var timeFormat = d3.timeFormat('%Y-%m-%d');
+
+				//设置线条动画起始位置
+				var lineObject ;
+
+				for (var i = 0; i < dataset.length; i++) {
+					if (i < currentLineNum) {
+						//对已有的线条做动画
+						lineObject = lines[i];
+						lineObject.movieBegin(i);
+					} else {
+						//如果现有线条不够，就加上一些
+						var newLine = new CrystalLineObject();
+						newLine.init(i);
+						lines.push(newLine);
+					}
+				}
+				
+				
+				
+				//删除多余的线条，如果有的话
+				if (dataset.length < currentLineNum) {
+					for (var i = dataset.length; i < currentLineNum; i++) {
+						lineObject = lines[i];
+						lineObject.remove();
+					}
+					lines.splice(dataset.length, currentLineNum - dataset.length);
+				}
+				
+				var maxdata = getMaxdata(dataset);
+				var newLength = dataset[0].length;
+				
+				zoom.scaleExtent([1, scaleMax]);
+				svg.call(zoom);
+
+				//横轴数据动画
+				xScale.domain(d3.extent(dataset[0], function(d) {
+					return d.time;
+				}));
+				xAxis.scale(xScale).ticks(xTicks).tickFormat(timeFormat);
+				svg.select('.bottom_axis').transition().duration(_duration).call(xAxis).selectAll("text")
+					.attr("transform", "translate(-10,20) rotate(-20)");
+				
+				xBar.selectAll("text").text(function(d) {
+					return xMarks[d];
+				});
+				xInner.scale(xScale).ticks(newLength);
+				xInnerBar.transition().duration(_duration).call(xInner);
+
+				//纵轴数据动画
+				yScale.domain([0, maxdata]);
+				yBar.transition().duration(_duration).call(yAxis);
+				yInnerBar.transition().duration(_duration).call(yInner);
+
+				//开始线条动画
+				for (var i = 0; i < lines.length; i++) {
+					lineObject = lines[i];
+					lineObject.reDraw(i, _duration);
+				}
+
+				currentLineNum = dataset.length;
+				dataLength = newLength;
+				
+				
+			}
+
+			//定义折线类
+			function CrystalLineObject() {
+				this.group = null;
+				this.path = null;
+				this.oldData = [];
+
+				this.init = function(id) {
+					var arr = dataset[id];
+					this.group = svg.append("g");
+
+					var line = d3.line()
+						.x(function(d, i) {
+							return xScale(d.time);
+						})
+						.y(function(d) {
+							return yScale(d.value);
+						});
+
+					//添加折线
+					this.path = this.group.append("path")
+						.attr("d", line(arr))
+						.style("fill", "none")
+						.style("stroke-width", 1)
+						.attr("clip-path", "url(#clip)")
+						.style("stroke", lineColor[id])
+						.style("stroke-opacity", 0.9);
+
+					//添加系列的小圆点
+					this.group.selectAll("circle")
+						.data(arr)
+						.enter()
+						.append("circle")
+						.attr("clip-path", "url(#clip)")
+						.attr("cx", function(d, i) {
+							return xScale(d.time);
+						})
+						.attr("cy", function(d) {
+							return yScale(d.value);
+						})
+						.attr("r", 5)
+						.attr("fill", lineColor[id]);
+					this.oldData = arr;
+				};
+
+				this.scale = function(id, _duration, transform) {
+					var arr = dataset[id];
+					
+					currentTransform=transform;
+					
+					var line = d3.line()
+						.x(function(d, i) {
+
+							return transform.applyX(xScale(d.time))
+						})
+						.y(function(d) {
+							return yScale(d.value);
+						})
+
+					//添加折线
+					this.group.select("path")
+						.attr("d", line(arr))
+						.style("fill", "none")
+						.style("stroke-width", 1)
+						.style("stroke", lineColor[id])
+						.style("stroke-opacity", 0.9);
+
+					this.group.selectAll("circle")
+						.attr("cx", function(d, i) {
+							return transform.applyX(xScale(d.time));
+						})
+						.attr("cy", function(d) {
+							return yScale(d.value);
+						})
+
+				}
+
+				//动画初始化方法
+				this.movieBegin = function(id) {
+					var arr = dataset[id];
+					//补足/删除路径
+					var olddata = this.oldData;
+					var line = d3.line()
+						.x(function(d, i) {
+							if (i >= olddata.length) return w - padding;
+							else return xScale(d.time);
+						})
+						.y(function(d, i) {
+							if (i >= olddata.length) return h - foot_height;
+							else return yScale(olddata[i].value);
+						});
+
+					//路径初始化
+					this.path.attr("d", line(arr));
+
+					//截断旧数据
+					var tempData = olddata.slice(0, arr.length);
+					var circle = this.group.selectAll("circle").data(tempData);
+
+					//删除多余的圆点
+					circle.exit().remove();
+
+					//圆点初始化，添加圆点,多出来的到右侧底部
+					this.group.selectAll("circle")
+						.data(arr)
+						.enter()
+						.append("circle")
+						.attr("cx", function(d, i) {
+							if (i >= olddata.length) return w - padding;
+							else return xScale(d.time);
+						})
+						.attr("cy", function(d, i) {
+							if (i >= olddata.length) return h - foot_height;
+							else return yScale(d.value);
+						})
+						.attr("r", 5)
+						.attr("fill", lineColor[id]);
+
+					this.oldData = arr;
+				};
+
+				//重绘加动画效果
+				this.reDraw = function(id, _duration) {
+					var arr = dataset[id];
+					var line = d3.line()
+						.x(function(d, i) {
+							return xScale(d.time);
+						})
+						.y(function(d) {
+							return yScale(d.value);
+						});
+
+					//路径动画
+					this.path.transition().duration(_duration).attr("d", line(arr));
+
+					//圆点动画
+					this.group.selectAll("circle")
+						.transition()
+						.duration(_duration)
+						.attr("cx", function(d, i) {
+							return xScale(d.time);
+						})
+						.attr("cy", function(d) {
+							return yScale(d.value);
+						})
+				};
+
+				//从画布删除折线
+				this.remove = function() {
+					this.group.remove();
+				};
+			}
+
+			//添加图例
+			function addLegend() {
+				var textGroup = legend.selectAll("text")
+					.data(lineNames);
+
+				textGroup.exit().remove();
+
+				legend.selectAll("text")
+					.data(lineNames)
+					.enter()
+					.append("text")
+					.text(function(d) {
+						return d;
+					})
+					.attr("class", "legend")
+					.attr("x", function(d, i) {
+						return i * 100;
+					})
+					.attr("y", 0)
+					.attr("fill", function(d, i) {
+						return lineColor[i];
+					});
+
+				var rectGroup = legend.selectAll("rect")
+					.data(lineNames);
+
+				rectGroup.exit().remove();
+
+				legend.selectAll("rect")
+					.data(lineNames)
+					.enter()
+					.append("rect")
+					.attr("x", function(d, i) {
+						return i * 100 - 20;
+					})
+					.attr("y", -10)
+					.attr("width", 12)
+					.attr("height", 12)
+					.attr("fill", function(d, i) {
+						return lineColor[i];
+					});
+
+				legend.attr("transform", "translate(" + ((w - lineNames.length * 100) / 2) + "," + (h - 10) + ")");
+			}
+
+			//产生随机数据
+			function getData() {
+				var lineNum = 4;
+				var dataNum = 30;
+				oldData = dataset;
+				dataset = [];
+				// xMarks = [];//水平方向
+				lineNames = [];
+
+				// for (var i = 0; i < dataNum; i++) {
+				// 	xMarks.push("标签" + i);
+				// }
+				var beginTime = +new Date(2019, 0, 1);
+
+				for (var i = 0; i < lineNum; i++) {
+					var tempArr = [];
+					for (var j = 1; j < dataNum; j++) {
+						tempArr.push({
+							value: Math.round(Math.random() * h),
+							time: new Date(beginTime + (j - 1) * 24 * 3600 * 1000)
+						});
+
+					}
+					dataset.push(tempArr);
+					lineNames.push("系列" + i);
+				}
+
+
+			}
+
+			//取得多维数组最大值
+			function getMaxdata(arr) {
+				var maxdata = 0;
+				for (var i = 0; i < arr.length; i++) {
+					maxdata = d3.max([maxdata, d3.max(arr[i], function(d) {
+						return d.value;
+					})]);
+				}
+				return maxdata;
+			}
+		</script>
+		<p align="left">
+			<button onClick="javascript:drawChart();">刷新数据</button>
+		</p>
+	</body>
+</html>

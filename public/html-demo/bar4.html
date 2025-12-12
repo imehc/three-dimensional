@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+  <style>
+    text.inner-circle {
+      font-weight: 400;
+      font-size: 12 px;
+      text-transform: uppercase;
+    }
+
+    text.inner-text {
+      font-weight: 400;
+      font-size: 36 px;
+      font-family: 'Metric Regular', 'Metric';
+      text-align: center;
+      font-style: normal;
+      text-transform: uppercase;
+    }
+
+    path {
+      stroke: steelblue;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: grey;
+      stroke-width: 2;
+      shape-rendering: crispEdges;
+    }
+
+    .grid.tick {
+      stroke: lightgrey;
+      stroke-opacity: 0.7;
+      shape-rendering: crispEdges;
+    }
+
+    .grid path {
+      stroke-width: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    var margin = {
+      top: 20,
+      right: 30,
+      bottom: 30,
+      left: 40
+    },
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+    var z = d3.scale.category20c();
+    var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ");
+    var data = [{
+      "data": [
+        [
+          "2016-01-21T01:20:00.000Z",
+          1.41818181818182
+        ],
+        [
+          "2016-01-21T02:28:00.000Z",
+          1.90661764705882
+        ],
+        [
+          "2016-01-21T03:36:00.000Z",
+          1.66764705882353
+        ],
+        [
+          "2016-01-21T04:44:00.000Z",
+          1.51691176470588
+        ],
+        [
+          "2016-01-21T05:52:00.000Z",
+          1.40955882352941
+        ],
+        [
+          "2016-01-21T07:00:00.000Z",
+          1.46323529411765
+        ],
+        [
+          "2016-01-21T08:08:00.000Z",
+          1.48308823529412
+        ],
+        [
+          "2016-01-21T09:16:00.000Z",
+          1.89384615384615
+        ]
+      ],
+      // "label": "a"
+    }, {
+      "data": [
+        [
+          "2016-01-21T01:20:00.000Z",
+          1.98701298701299
+        ],
+        [
+          "2016-01-21T02:28:00.000Z",
+          1.0
+        ],
+        [
+          "2016-01-21T03:36:00.000Z",
+          1.94852941176471
+        ],
+        [
+          "2016-01-21T04:44:00.000Z",
+          2.91176470588235
+        ],
+        [
+          "2016-01-21T05:52:00.000Z",
+          2.81617647058824
+        ],
+        [
+          "2016-01-21T07:00:00.000Z",
+          2.0
+        ],
+        [
+          "2016-01-21T08:08:00.000Z",
+          1.94117647058824
+        ],
+        [
+          "2016-01-21T09:16:00.000Z",
+          1.96969696969697
+        ]
+      ],
+      // "label": "b"
+    }];
+
+    console.log(data, 'data')
+    var x = d3.scale.ordinal().rangeRoundBands([0, width], .9);
+    var y = d3.scale.linear()
+      .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+      .scale(x).tickSize(0)
+      .orient("bottom").innerTickSize(-height).outerTickSize(0)
+      .tickFormat(d3.time.format("%H:%M"));
+
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left").innerTickSize(-width).outerTickSize(0);
+
+    var ary = [];
+    data.forEach(function (d) {
+      ary.push(d.data);
+    });
+
+    x.domain(ary[0].map(function (d) {
+      return parseDate.parse(d[0]);
+    }));
+
+    // y.domain([0, d3.max(d3.merge(ary), function (d) {
+    //   // console.log(d.y0 + d.y); //This is NaN = Not a number 
+    //   //return d.y0 + d.y; 
+    //   return d[1]; //returns grid lines if that is what you want 
+    // })]);
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+    // var layer = svg.selectAll(".layer")
+    //   .data(data)
+    //   .enter().append("g")
+    //   .attr("class", "layer")
+    //   .style("fill", function (d, i) {
+    //     return z(i);
+    //   });
+
+    // layer.selectAll("rect")
+    //   .data(function (d) {
+    //     return d.data;
+    //   })
+    //   .enter().append("rect")
+    //   .attr("x", function (d, i, j) {
+    //     if (j === 0)
+    //       return x(parseDate.parse(d[0])) - x.rangeBand() / 2;
+    //     else
+    //       return x(parseDate.parse(d[0])) + x.rangeBand() / 2;
+    //   })
+    //   .attr("y", function (d) {
+    //     return height - y(d[1]); //Note this is returning data 
+    //   })
+    //   .attr("height", function (d) {
+    //     return y(d[1]); //Note this is returning data 
+    //   })
+    //   .attr("width", x.rangeBand() - 1);
+  </script>
+</body>
+
+</html>

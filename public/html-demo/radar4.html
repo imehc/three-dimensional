@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>radar for chatGPT</title>
+</head>
+
+<body>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script>
+    window.onload = function () {
+      var width = 500, height = 500;
+      var radius = Math.min(width, height) / 2;
+      var color = d3.scaleOrdinal(d3.schemeCategory10);
+      var radarLine = d3.lineRadial()
+        .radius(function (d) { return d.value; })
+        .angle(function (d) { return d.angle; });
+
+      var data = [
+        { name: 'A', value: 100 },
+        { name: 'B', value: 80 },
+        { name: 'C', value: 60 },
+        { name: 'D', value: 40 },
+        { name: 'E', value: 20 },
+        { name: 'F', value: 10 }
+      ];
+
+      var svg = d3.select('body')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+      var data = svg.selectAll('g.data')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('class', 'data');
+
+      var grid = svg.selectAll('g.grid')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('class', 'grid');
+      grid.append('circle')
+        .attr('r', function (d, i) { return radius / data.length * i; });
+      grid.append('text')
+        .attr('y', function (d, i) { return -radius / data.length * i; })
+        .text(function (d, i) { return i; });
+
+      var line = data.append('path')
+        .attr('d', function (d) {
+          d.angle = (d.value / 100) * Math.PI * 2;
+          return radarLine([d]);
+        })
+        .attr('fill', function (d, i) { return color(i); })
+        .attr('stroke', function (d, i) { return color(i); });
+
+      // 设置折线动画
+      line.transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attrTween('stroke-dasharray', function () {
+          var len = this.getTotalLength();
+          return function (t) {
+            return (d3.interpolateString('0,' + len, len + ',0'))(t);
+          };
+        });
+    }
+  </script>
+</body>
+
+</html>
