@@ -12,46 +12,15 @@ export default defineConfig({
 	css: {
 		transformer: 'postcss',
 	},
-
-	optimizeDeps: {
-		include: ["@theatre/core", "@theatre/studio", "@theatre/r3f"],
-		esbuildOptions: {
-			// 确保正确处理 CommonJS 模块
-			mainFields: ['module', 'main'],
-		},
-	},
-	ssr: {
-		external: ["@theatre/core", "@theatre/studio", "@theatre/r3f"],
-	},
 	build: {
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
 					// 只在客户端构建时进行代码分割
 					if (id.includes('node_modules')) {
-						// Three.js 核心
-						if (id.includes('three')) {
-							return 'three-core';
-						}
-						// React Three Fiber 生态
-						if (id.includes('@react-three/fiber') || id.includes('@react-three/drei')) {
-							return 'r3f-vendor';
-						}
-						// Theatre.js 相关
-						if (id.includes('@theatre/')) {
-							return 'theatre';
-						}
-						// Leva
-						if (id.includes('leva')) {
-							return 'leva';
-						}
 						// D3
 						if (id.includes('d3')) {
 							return 'd3';
-						}
-						// GSAP
-						if (id.includes('gsap') || id.includes('tween')) {
-							return 'gsap';
 						}
 					}
 				},

@@ -77,33 +77,10 @@ export default function HomeLayout() {
 			<div className="navbar bg-base-100 shadow-lg">
 				<div className="flex-1">
 					<Link to="/" className="text-xl">
-						Threejs Demo
+						D3 Demo
 					</Link>
 				</div>
 				<div className="flex-none gap-2">
-					<a
-						href="https://sbcode.net/react-three-fiber/"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="btn btn-ghost"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="w-6 h-6"
-						>
-							<title>参考文档</title>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-							/>
-						</svg>
-						<span className="hidden sm:inline text-sm">参考文档</span>
-					</a>
 					<div className="dropdown dropdown-end">
 						<button
 							type="button"

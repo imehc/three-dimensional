@@ -1,3 +1,3 @@
-# Three.js 示例项目
+# D3 示例项目
 
-Three.js 和 Canvas 2D 的学习示例集合。
+d3的学习示例集合。
