@@ -1,5 +1,5 @@
 {
-	"name": "chemi_manage",
+	"name": "game-phaser",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -13,9 +13,9 @@
 	"dependencies": {
 		"@react-router/node": "^7.9.2",
 		"clsx": "^2.1.1",
-		"d3": "^7.9.0",
 		"date-fns": "^4.1.0",
 		"isbot": "^5.1.31",
+		"phaser": "^3.90.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-error-boundary": "^6.0.0",
@@ -26,11 +26,9 @@
 		"@biomejs/biome": "2.2.6",
 		"@react-router/dev": "^7.9.2",
 		"@tailwindcss/vite": "^4.1.13",
-		"@types/d3": "^7.4.3",
 		"@types/node": "^22",
 		"@types/react": "^19.1.13",
 		"@types/react-dom": "^19.1.9",
-		"@types/three": "^0.180.0",
 		"daisyui": "^5.2.3",
 		"tailwindcss": "^4.1.13",
 		"typescript": "^5.9.2",

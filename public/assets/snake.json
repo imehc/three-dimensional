@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "slug_1.png",
+	"frame": {"x":135,"y":175,"w":125,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":125,"h":82},
+	"sourceSize": {"w":144,"h":84}
+},
+{
+	"filename": "slug_2.png",
+	"frame": {"x":1,"y":175,"w":132,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":132,"h":82},
+	"sourceSize": {"w":144,"h":84}
+},
+{
+	"filename": "slug_3.png",
+	"frame": {"x":1,"y":1,"w":143,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":143,"h":82},
+	"sourceSize": {"w":144,"h":84}
+},
+{
+	"filename": "slug_4.png",
+	"frame": {"x":1,"y":85,"w":134,"h":88},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":134,"h":88},
+	"sourceSize": {"w":154,"h":90}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "snake.png",
+	"format": "RGBA8888",
+	"size": {"w":261,"h":261},
+	"scale": "0.5",
+	"smartupdate": "$TexturePacker:SmartUpdate:89c2ff29f06f3b09c73f768a345ae0b6:e438c8c86f5a3565258807bd3464637e:2a194967d71da88bdc69ff162da0bdf1$"
+}
+}

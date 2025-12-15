@@ -1,0 +1,289 @@
+{
+	"frames": [
+		{
+			"filename": "panda_01_die_01.png",
+			"frame": {
+				"x": 1,
+				"y": 139,
+				"w": 67,
+				"h": 70
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 1,
+				"w": 67,
+				"h": 70
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_die_02.png",
+			"frame": {
+				"x": 71,
+				"y": 115,
+				"w": 67,
+				"h": 71
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 2,
+				"y": 0,
+				"w": 67,
+				"h": 71
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_die_03.png",
+			"frame": {
+				"x": 217,
+				"y": 71,
+				"w": 52,
+				"h": 66
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 16,
+				"y": 5,
+				"w": 52,
+				"h": 66
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_die_04.png",
+			"frame": {
+				"x": 208,
+				"y": 140,
+				"w": 53,
+				"h": 63
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 18,
+				"y": 8,
+				"w": 53,
+				"h": 63
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_die_05.png",
+			"frame": {
+				"x": 1,
+				"y": 211,
+				"w": 61,
+				"h": 56
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 12,
+				"y": 15,
+				"w": 61,
+				"h": 56
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_die_06.png",
+			"frame": {
+				"x": 77,
+				"y": 1,
+				"w": 73,
+				"h": 40
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 4,
+				"y": 31,
+				"w": 73,
+				"h": 40
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_idle_01.png",
+			"frame": {
+				"x": 70,
+				"y": 188,
+				"w": 67,
+				"h": 70
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 1,
+				"w": 67,
+				"h": 70
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_idle_02.png",
+			"frame": {
+				"x": 139,
+				"y": 188,
+				"w": 67,
+				"h": 70
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 1,
+				"w": 67,
+				"h": 70
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_run_01.png",
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 74,
+				"h": 67
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 4,
+				"w": 74,
+				"h": 67
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_run_02.png",
+			"frame": {
+				"x": 1,
+				"y": 70,
+				"w": 68,
+				"h": 67
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 4,
+				"w": 68,
+				"h": 67
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_run_03.png",
+			"frame": {
+				"x": 147,
+				"y": 71,
+				"w": 68,
+				"h": 67
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 4,
+				"w": 68,
+				"h": 67
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_run_04.png",
+			"frame": {
+				"x": 77,
+				"y": 43,
+				"w": 68,
+				"h": 70
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 1,
+				"w": 68,
+				"h": 70
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		},
+		{
+			"filename": "panda_01_run_05.png",
+			"frame": {
+				"x": 152,
+				"y": 1,
+				"w": 72,
+				"h": 68
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 2,
+				"w": 72,
+				"h": 68
+			},
+			"sourceSize": {
+				"w": 77,
+				"h": 71
+			}
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "panda.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 270,
+			"h": 270
+		},
+		"scale": "0.3",
+		"smartupdate": "$TexturePacker:SmartUpdate:17310773fbacdda2e8c428236cb6aba0:87baf75362f5f026398f4a182ab92dae:d0e9f6f256a5168b1e6e5deae6efca28$"
+	}
+}
