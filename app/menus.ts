@@ -66,6 +66,8 @@ const canvas = [
 	{ name: "Konva", hidden: true },
 ];
 
+const cesium = [{ name: "起步" }]
+
 type MenuItem = {
 	name: string;
 	folder: string;
@@ -92,7 +94,7 @@ const menus: Menu[] = [
 			...item,
 			href: `/v1/${200 + idx + 1}`,
 			folder: `/v1/example02/${(idx + 1).toString().padStart(2, "0")}`,
-		})),
+		}))
 	},
 	{
 		category: "自定义组件",
@@ -116,6 +118,14 @@ const menus: Menu[] = [
 			...item,
 			href: `/canvas/${idx + 1}`,
 			folder: `/v2/canvas/${(idx + 1).toString().padStart(2, "0")}`,
+		})),
+	},
+	{
+		category: "Cesium",
+		items: cesium.map((item, idx) => ({
+			...item,
+			href: `/cesium/${idx + 1}`,
+			folder: `/v2/cesium/${(idx + 1).toString().padStart(2, "0")}`,
 		})),
 	},
 ];

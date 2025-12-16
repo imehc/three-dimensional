@@ -17,6 +17,7 @@ export function meta() {
 export default function HomeLayout() {
 	const location = useLocation();
 	const [themeMode, setThemeMode] = useState<ThemeMode>("system");
+	const [isContentFullscreen, setIsContentFullscreen] = useState(true);
 	const [isClient, setIsClient] = useState(false);
 	const activeItemRef = useRef<HTMLLIElement>(null);
 
@@ -70,6 +71,25 @@ export default function HomeLayout() {
 			});
 		}
 	}, []);
+
+
+	useEffect(() => {
+		if (!isClient) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			// F 键切换内容全屏
+			if (event.key === "f" || event.key === "F") {
+				event.preventDefault();
+				setIsContentFullscreen((state) => !state)
+			}
+		};
+
+		document.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isClient]);
+
 
 	return (
 		<div className="h-screen flex flex-col">
@@ -208,7 +228,9 @@ export default function HomeLayout() {
 				</aside>
 
 				{/* Main Content */}
-				<main className="flex-1 bg-base-100 border border-solid border-primary rounded-2xl overflow-hidden relative">
+				<main className={clsx([
+					isContentFullscreen ? "fixed left-0 top-0 w-screen h-screen bg-base-100 transition" : "flex-1 bg-base-100 border border-solid border-primary rounded-2xl overflow-hidden relative"
+				])}>
 					<RouteAwareErrorBoundary>
 						<Suspense key={location.pathname} fallback={<Loading />}>
 							<Outlet />
