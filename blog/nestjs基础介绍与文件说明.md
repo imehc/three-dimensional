@@ -13,6 +13,8 @@ summary: 'nest入门'
 NestJS 是一个用于构建高效、可扩展的服务器端应用程序的框架。它基于 TypeScript 构建，并受到 Angular 的启发，提供了一种模块化和装饰器驱动的编程模型。NestJS 结合了面向对象编程 (OOP)、函数式编程 (FP) 和函数式反应编程 (FRP) 的元素，旨在创建稳定且可维护的服务器端应用程序。
 ```
 
+<!-- truncate -->
+
 ### NestJs和Node Js的关系
 
 ```
