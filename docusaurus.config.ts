@@ -41,14 +41,18 @@ const config: Config = {
 		"./src/plugins/rspack-config.ts",
 	],
 
+	markdown: {
+		mermaid: true,
+	},
+
 	themes: [
-		"@docusaurus/theme-live-codeblock",
+		"@docusaurus/theme-mermaid",
 		[
 			"@easyops-cn/docusaurus-search-local",
 			{
 				hashed: true,
 				language: ["zh", "en"],
-				indexBlog: false,
+				indexBlog: true,
 				indexPages: true,
 				indexDocs: true,
 				docsRouteBasePath: "/",
@@ -70,9 +74,21 @@ const config: Config = {
 					sidebarPath: "./sidebars.ts",
 					showLastUpdateTime: true,
 					showLastUpdateAuthor: true,
-					editUrl: 'https://github.com/imehc/three-dimensional/edit/main/',
+					// editUrl: 'https://github.com/imehc/three-dimensional/edit/main/',
 				},
-				blog: false, // Disable blog
+				blog: {
+					path: "blog",
+					routeBasePath: "blog",
+					showReadingTime: true,
+					showLastUpdateTime: true,
+					showLastUpdateAuthor: true,
+					postsPerPage: 10, // 文章列表分页
+					blogSidebarTitle: "最近文章",
+					blogSidebarCount: 15,
+					onInlineTags: "ignore", // 禁用未定义标签警告
+					onUntruncatedBlogPosts: "ignore", // 禁用无截断文章警告
+					// editUrl: 'https://github.com/imehc/three-dimensional/edit/main/',
+				},
 				theme: {
 					customCss: "./src/css/custom.css",
 				},
@@ -97,6 +113,11 @@ const config: Config = {
 			},
 			items: [
 				{
+					to: "/blog",
+					label: "博客",
+					position: "left",
+				},
+				{
 					type: "docSidebar",
 					sidebarId: "webSidebar",
 					label: "Web",
@@ -116,7 +137,6 @@ const config: Config = {
 		liveCodeBlock: {
 			playgroundPosition: "bottom",
 		},
-		hideOnScroll: true,
 	} satisfies Preset.ThemeConfig,
 };
 
