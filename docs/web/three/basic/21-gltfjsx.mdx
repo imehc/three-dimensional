@@ -1,0 +1,18 @@
+---
+sidebar_position: 21
+title: GLTFJSX
+---
+
+import App from '@site/src/exmaples/web/three/basic/21';
+
+# GLTFJSX
+
+<App />
+
+## 核心概念
+
+- **GLTFJSX 工具**: 自动将 3D 模型文件转换为可复用的 React 组件
+- **useGLTF Hook**: 从 drei 提供的 Hook，用于加载 glTF/GLB 模型
+- **模型预加载**: useGLTF.preload() 在组件加载前准备资源，提高性能
+- **Leva 控制面板**: 实时调整模型材质属性（如颜色）的 UI 界面
+- **交互**: 支持鼠标悬停和点击事件，与 3D 模型交互

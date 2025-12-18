@@ -1,0 +1,18 @@
+---
+sidebar_position: 19
+title: 场景背景切换
+---
+
+import App from '@site/src/exmaples/web/three/advanced/19';
+
+# 场景背景切换
+
+<App/>
+
+## 核心概念
+
+- **useCubeTexture**: 加载 6 张图片组成的立方体纹理，用于创建环境背景
+- **scene.background**: Three.js 场景的背景纹理属性
+- **GSAP 动画**: 使用 GSAP 库实现平滑的背景切换过渡效果
+- **GizmoHelper**: 显示坐标系和视角快捷按钮，方便调试和交互
+- **Suspense**: React 异步加载机制，用于处理模型加载的异步操作

@@ -1,0 +1,17 @@
+---
+sidebar_position: 16
+title: 加载本地模型
+---
+
+import App from '@site/src/exmaples/web/three/advanced/16';
+
+# 加载本地模型
+
+<App/>
+
+## 核心概念
+
+- **GLTFLoader**: 用于加载 GLTF 和 GLB 格式的 3D 模型文件
+- **Box3**: 计算 3D 对象的包围盒，用于自动调整相机视角
+- **OrbitControls**: 轨道控制，允许用户通过鼠标旋转、缩放和移动场景
+- **useMemo**: 优化性能，避免重复计算包围盒和中心点

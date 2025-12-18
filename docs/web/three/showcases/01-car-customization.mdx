@@ -1,0 +1,22 @@
+---
+sidebar_position: 1
+title: 汽车换肤
+---
+
+import App from '@site/src/exmaples/web/three/showcases/01';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import Loading from '@site/src/exmaples/web/componets/Loading'
+
+# 汽车换肤
+
+<BrowserOnly fallback={<Loading />}>
+  {() => <App />}
+</BrowserOnly>
+
+## 核心概念
+
+- **HDRLoader**: 加载高动态范围图像，用于逼真的环境光照
+- **PBR材质**: 基于物理的渲染，使用金属度和粗糙度参数
+- **DRACO压缩**: 压缩3D模型数据，减少文件大小
+- **材质替换**: 加载GLTF模型后，替换其中各部件的材质
+- **颜色动态修改**: 实时修改材质颜色产生换肤效果

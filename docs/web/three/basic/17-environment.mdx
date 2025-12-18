@@ -1,0 +1,21 @@
+---
+sidebar_position: 17
+title: 环境
+---
+
+import App from '@site/src/exmaples/web/three/basic/17';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import Loading from '@site/src/exmaples/web/componets/Loading'
+
+# 环境
+
+<BrowserOnly fallback={<Loading />}>
+  {() => <App />}
+</BrowserOnly>
+
+## 核心概念
+
+- **Environment**: @react-three/drei 提供的组件，用于设置场景背景和环境光照
+- **预设环境**: 内置的高质量环境贴图（preset）
+- **HDR 贴图**: 高动态范围图像，提供更真实的光照效果
+- **autoRotate**: 自动旋转视角的轨道控制功能

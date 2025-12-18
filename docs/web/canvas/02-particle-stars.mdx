@@ -1,0 +1,20 @@
+---
+sidebar_position: 2
+title: 星空粒子
+---
+
+import App from '@site/src/exmaples/web/canvas/02';
+
+# 星空粒子
+
+<App />
+
+## 核心概念
+
+- **粒子系统**: 管理大量独立的粒子对象，每帧更新位置和状态
+- **圆周运动**: 使用正弦和余弦函数计算粒子在圆形轨道上的位置
+- **requestAnimationFrame**: 浏览器提供的高效动画循环方法，同步浏览器刷新率
+- **Canvas复合操作**: `globalCompositeOperation` 控制图层混合方式
+  - `source-over`: 正常绘制（新图层覆盖旧图层）
+  - `lighter`: 相加混合（重叠部分变亮）
+- **闪烁效果**: 通过随机改变透明度实现动态效果

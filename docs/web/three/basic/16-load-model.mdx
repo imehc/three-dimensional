@@ -1,0 +1,21 @@
+---
+sidebar_position: 16
+title: 加载模型
+---
+
+import App from '@site/src/exmaples/web/three/basic/16';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import Loading from '@site/src/exmaples/web/componets/Loading'
+
+# 加载模型
+
+<BrowserOnly fallback={<Loading/>}>
+  {() => <App />}
+</BrowserOnly>
+
+## 核心概念
+
+- **useLoader**: React Three Fiber 的 Hook，用于加载异步资源（如模型文件）
+- **GLTFLoader**: 加载 GLTF/GLB 格式的 3D 模型
+- **primitive**: 将原生 Three.js 对象添加到 React Three Fiber 场景
+

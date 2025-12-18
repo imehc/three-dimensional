@@ -1,0 +1,18 @@
+---
+sidebar_position: 23
+title: 自动移动Hook
+---
+
+import App from '@site/src/exmaples/web/three/basic/23';
+
+# 自动移动Hook
+
+<App />
+
+## 核心概念
+
+- **useKeyboard Hook**: 自定义 Hook，全局监听键盘事件并维护状态字典
+- **useRef vs useState**: useRef 用于不需要触发重新渲染的数据，性能更优
+- **事件监听清理**: useEffect 返回清理函数移除事件监听，防止内存泄漏
+- **帧无关移动**: 使用 delta 时间参数计算距离，确保移动速度与帧率无关
+- **选中状态管理**: 通过 onClick 切换选中状态，选中时才响应键盘输入

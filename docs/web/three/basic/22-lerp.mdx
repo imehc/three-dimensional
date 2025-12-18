@@ -1,0 +1,19 @@
+---
+sidebar_position: 22
+title: 使用插值(Lerp)
+---
+
+import App from '@site/src/exmaples/web/three/basic/22';
+
+# 使用插值(Lerp)
+
+<App />
+
+## 核心概念
+
+- **线性插值 (Lerp)**: 在两个值之间平滑过渡的数学方法 - 公式: `result = (1 - t) * from + t * to`
+- **Vector3.lerp()**: Three.js 提供的向量插值方法，用于相机、位置、旋转等
+- **Color.lerp()**: Three.js 的颜色插值，平滑过渡两个颜色之间
+- **useFrame Hook**: 每帧调用，在 Lerp 中用来持续更新动画进度
+- **动画平滑性**: Lerp 的速度参数（通常 0.01-0.05）控制动画的流畅度
+
