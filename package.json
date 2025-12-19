@@ -33,6 +33,7 @@
 		"@theatre/r3f": "^0.7.2",
 		"@theatre/studio": "^0.7.2",
 		"@tweenjs/tween.js": "^25.0.0",
+		"cesium": "^1.136.0",
 		"client": "link:@docusaurus/plugin-content-docs/client",
 		"clsx": "^2.0.0",
 		"d3": "^7.9.0",
@@ -42,8 +43,8 @@
 		"leva": "^0.10.1",
 		"meshline": "^3.3.1",
 		"prism-react-renderer": "^2.3.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
 		"three": "^0.182.0",
 		"zustand": "^5.0.9"
 	},
@@ -58,7 +59,9 @@
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"@types/three": "^0.182.0",
+		"copy-webpack-plugin": "^13.0.1",
 		"daisyui": "^5.5.14",
+		"dotenv": "^17.2.3",
 		"postcss": "^8.5.6",
 		"tailwindcss": "^4.1.18",
 		"typescript": "~5.6.2"

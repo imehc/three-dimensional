@@ -7,7 +7,7 @@ export default function DocItemLayout(props: Props): ReactNode {
   return (
     <>
       <OriginalDocItemLayout {...props} />
-      <GiscusComments />
+      {process.env.NODE_ENV === 'production' && <GiscusComments />}
     </>
   );
 }

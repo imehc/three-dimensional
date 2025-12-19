@@ -39,6 +39,7 @@ const config: Config = {
 	plugins: [
 		"./src/plugins/tailwind-config.ts",
 		"./src/plugins/rspack-config.ts",
+		"./src/plugins/cesium-config.ts",
 	],
 
 	markdown: {
@@ -80,8 +81,8 @@ const config: Config = {
 					path: "blog",
 					routeBasePath: "blog",
 					showReadingTime: true,
-					showLastUpdateTime: true,
-					showLastUpdateAuthor: true,
+					showLastUpdateTime: false,
+					showLastUpdateAuthor: false,
 					postsPerPage: 10, // 文章列表分页
 					blogSidebarTitle: "最近文章",
 					blogSidebarCount: 15,

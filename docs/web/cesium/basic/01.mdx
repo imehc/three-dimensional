@@ -1,0 +1,58 @@
+---
+sidebar_position: 1
+title: 使用单张图片作为底图
+tags: [Javascript]
+---
+
+import App from '@site/src/exmaples/web/cesium/basic/01';
+
+# 使用单张图片作为底图
+
+本示例展示如何使用 `SingleTileImageryProvider` 将单张图片作为 Cesium 的底图，并创建一个简洁的 Viewer 实例。
+
+<App />
+
+## 核心功能
+
+### SingleTileImageryProvider
+
+`SingleTileImageryProvider` 允许你使用一张静态图片作为地球的底图，适用于以下场景：
+- 展示自定义的世界地图
+- 使用离线地图图片
+- 快速原型开发，无需加载在线地图服务
+
+### 禁用默认 UI 控件
+
+示例中禁用了所有默认的 Cesium UI 控件，包括：
+- `baseLayerPicker`: 底图选择器
+- `animation`: 动画控件
+- `timeline`: 时间轴
+- `fullscreenButton`: 全屏按钮
+- `geocoder`: 地理编码搜索
+- `homeButton`: 返回主视图按钮
+- `infoBox`: 信息框
+- `sceneModePicker`: 场景模式选择器
+- `selectionIndicator`: 选择指示器
+- `navigationHelpButton`: 导航帮助按钮
+
+## 关键代码
+
+```tsx
+const viewer = new Viewer(el, {
+  baseLayerPicker: false,
+  baseLayer: new ImageryLayer(
+    new SingleTileImageryProvider({
+      url: "/cesium/images/word.jpg",
+      tileWidth: 256,
+      tileHeight: 256,
+    }),
+  ),
+  // ... 禁用其他 UI 控件
+});
+```
+
+## 注意事项
+
+1. **图片尺寸**：建议使用 2:1 比例的图片（例如 2048x1024），以正确映射到球面
+2. **资源清理**：示例使用 React 的 `useEffect` 钩子确保在组件卸载时销毁 Viewer 实例
+3. **性能优化**：使用 `useEffectEvent` 避免不必要的重新渲染
