@@ -34,7 +34,6 @@
 		"@theatre/studio": "^0.7.2",
 		"@tweenjs/tween.js": "^25.0.0",
 		"cesium": "^1.136.0",
-		"client": "link:@docusaurus/plugin-content-docs/client",
 		"clsx": "^2.0.0",
 		"d3": "^7.9.0",
 		"dat.gui": "^0.7.9",
