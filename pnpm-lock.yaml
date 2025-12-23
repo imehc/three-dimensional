@@ -59,9 +59,6 @@ importers:
       cesium:
         specifier: ^1.136.0
         version: 1.136.0
-      client:
-        specifier: link:@docusaurus/plugin-content-docs/client
-        version: link:@docusaurus/plugin-content-docs/client
       clsx:
         specifier: ^2.0.0
         version: 2.1.1
