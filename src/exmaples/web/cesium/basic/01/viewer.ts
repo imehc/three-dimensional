@@ -55,6 +55,8 @@ export function initViewer(el: HTMLElement) {
 		map1: "/cesium/01/word.jpg",
 		map2: "/cesium/01/world_b.jpg",
 		xyz: "//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg",
+		mapbox:
+			"https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.webp?sku=1016Ab1dNMw2X&access_token=pk.eyJ1IjoidHJhbXBqd2wiLCJhIjoiY2xhYXIxbHExMDN3dzN3cGliOHdrMThxMiJ9.6er2aYb1EBjSsK1-t9d2-w",
 		wms: "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?",
 		天地图: "http://t{s}.tianditu.gov.cn/",
 		影像: "/cesium/01/word.jpg",
@@ -91,6 +93,12 @@ export function initViewer(el: HTMLElement) {
 				case "xyz":
 					newProvider = new UrlTemplateImageryProvider({
 						url: imageryTypes.xyz,
+					});
+					break;
+				case "mapbox":
+					newProvider = new UrlTemplateImageryProvider({
+						credit: "mapbox",
+						url: imageryTypes.mapbox,
 					});
 					break;
 				case "wms":

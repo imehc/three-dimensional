@@ -6,53 +6,142 @@ tags: [Javascript]
 
 import App from '@site/src/exmaples/web/cesium/basic/01';
 
-# 影像底图
+# 底图
 
-本示例展示如何使用 `SingleTileImageryProvider` 将单张图片作为 Cesium 的底图，并创建一个简洁的 Viewer 实例。
+本示例展示如何在 Cesium 中加载和切换多种影像底图服务,包括单张图片、XYZ 瓦片、WMS、WMTS 等多种底图服务类型,并通过 GUI 控制面板实现底图的动态切换。
 
 <App />
 
 ## 核心功能
 
-### SingleTileImageryProvider
+### 多种底图加载方式
 
-`SingleTileImageryProvider` 允许你使用一张静态图片作为地球的底图，适用于以下场景：
-- 展示自定义的世界地图
-- 使用离线地图图片
-- 快速原型开发，无需加载在线地图服务
+示例实现了以下几种底图加载方式:
 
-### 禁用默认 UI 控件
+- **SingleTileImageryProvider**:加载单张图片作为底图
+- **UrlTemplateImageryProvider**:通过 URL 模板加载 XYZ 瓦片服务(支持 Mars3D、Mapbox 等)
+- **WebMapServiceImageryProvider**:加载 WMS 服务
+- **WebMapTileServiceImageryProvider**:加载 WMTS 服务(如天地图)
 
-示例中禁用了所有默认的 Cesium UI 控件，包括：
-- `baseLayerPicker`: 底图选择器
-- `animation`: 动画控件
-- `timeline`: 时间轴
-- `fullscreenButton`: 全屏按钮
-- `geocoder`: 地理编码搜索
-- `homeButton`: 返回主视图按钮
-- `infoBox`: 信息框
-- `sceneModePicker`: 场景模式选择器
-- `selectionIndicator`: 选择指示器
-- `navigationHelpButton`: 导航帮助按钮
+### 底图动态切换
+
+使用 dat.gui 创建交互式控制面板,支持在多种底图类型之间无缝切换:
+
+```tsx
+gui
+  .add(imageryOptions, "底图类型", Object.keys(imageryTypes))
+  .onChange((value) => {
+    viewer.imageryLayers.removeAll();
+    // 根据选择加载对应的底图
+  });
+```
+
+### 图层属性调整
+
+示例展示了如何调整图层的显示属性:
+
+```tsx
+const layer = viewer.imageryLayers.addImageryProvider(imageryProvider);
+layer.alpha = 0.5;        // 透明度
+layer.brightness = 2.0;   // 亮度
+layer.contrast = 2.0;     // 对比度
+layer.hue = 2.0;          // 色调
+layer.saturation = 2.0;   // 饱和度
+```
+
+### 图层顺序管理
+
+支持对图层进行顺序调整:
+
+```tsx
+viewer.scene.imageryLayers.lower(layer);        // 下移一层
+viewer.scene.imageryLayers.lowerToBottom(layer); // 移到最底层
+viewer.scene.imageryLayers.raise(layer);         // 上移一层
+viewer.scene.imageryLayers.raiseToTop(layer);    // 移到最顶层
+```
 
 ## 关键代码
+
+### 初始化 Viewer
 
 ```tsx
 const viewer = new Viewer(el, {
   baseLayerPicker: false,
-  baseLayer: new ImageryLayer(
-    new SingleTileImageryProvider({
-      url: "/cesium/images/word.jpg",
-      tileWidth: 256,
-      tileHeight: 256,
-    }),
-  ),
-  // ... 禁用其他 UI 控件
+  animation: false,
+  timeline: false,
+  fullscreenButton: false,
+  geocoder: false,
+  homeButton: false,
+  infoBox: false,
+  sceneModePicker: false,
+  selectionIndicator: false,
+  navigationHelpButton: false,
 });
+
+// 移除默认影像和地形
+viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+viewer.scene.terrainProvider = new EllipsoidTerrainProvider({});
 ```
+
+### XYZ 瓦片服务
+
+```tsx
+const provider = new UrlTemplateImageryProvider({
+  url: "//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg",
+});
+viewer.imageryLayers.addImageryProvider(provider);
+```
+
+### WMS 服务
+
+```tsx
+const provider = new WebMapServiceImageryProvider({
+  url: "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?",
+  layers: "nexrad-n0r",
+  parameters: {
+    transparent: "true",
+    format: "image/png",
+  },
+});
+viewer.imageryLayers.addImageryProvider(provider);
+```
+
+### WMTS 服务(天地图)
+
+```tsx
+const token = "your_tianditu_token";
+const provider = new WebMapTileServiceImageryProvider({
+  url: `http://t{s}.tianditu.gov.cn/vec_c/wmts?tk=${token}`,
+  layer: "vec",
+  style: "default",
+  format: "tiles",
+  tileMatrixSetID: "c",
+  subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+  tilingScheme: new GeographicTilingScheme(),
+  maximumLevel: 18,
+});
+viewer.imageryLayers.addImageryProvider(provider);
+```
+
+## 应用场景
+
+- **地图应用**:提供多种底图选项,满足不同业务需求
+- **数据可视化**:在不同底图上展示业务数据
+- **离线应用**:使用本地图片作为底图
+- **多源数据融合**:叠加多个影像图层进行对比分析
 
 ## 注意事项
 
-1. **图片尺寸**：建议使用 2:1 比例的图片（例如 2048x1024），以正确映射到球面
-2. **资源清理**：示例使用 React 的 `useEffect` 钩子确保在组件卸载时销毁 Viewer 实例
-3. **性能优化**：使用 `useEffectEvent` 避免不必要的重新渲染
+1. **资源清理**:切换底图前记得使用 `removeAll()` 清除现有图层,避免内存泄漏
+2. **跨域问题**:使用外部底图服务时需要注意 CORS 配置
+3. **Token 管理**:天地图等服务需要申请 Token,注意保护和更新
+4. **性能优化**:大量图层叠加会影响渲染性能,按需加载
+5. **坐标系统**:注意不同底图服务的坐标系(WebMercator vs Geographic)
+6. **组件清理**:页面卸载时记得销毁 Viewer 和 GUI 实例
+
+## 参考资料
+
+- [Cesium ImageryLayer 官方文档](https://cesium.com/learn/cesiumjs/ref-doc/ImageryLayer.html)
+- [天地图 API 文档](https://lbs.tianditu.gov.cn/server/guide.html)
+- [dat.GUI 使用指南](https://github.com/dataarts/dat.gui)
+- [Cesium Examples](https://github.com/jiawanlong/Cesium-Examples)
