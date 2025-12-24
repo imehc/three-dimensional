@@ -1,0 +1,162 @@
+---
+sidebar_position: 2
+title: 坐标系转换
+tags: [Javascript]
+---
+
+import App from '@site/src/exmaples/web/cesium/basic/03';
+
+# 坐标系转换
+
+本示例展示如何在 Cesium 中使用 proj4 库进行不同坐标系之间的转换，将投影坐标（如 CGCS2000、WGS84 投影坐标等）转换为 Cesium 使用的经纬度坐标系（WGS84 地理坐标）。
+
+<App />
+
+## 核心功能
+
+### 坐标系基础概念
+
+在 GIS 和三维地球应用中，常见的坐标系类型包括：
+
+- **地理坐标系（GCS）**：使用经度、纬度表示位置，如 WGS84（EPSG:4326）、CGCS2000（EPSG:4490）
+- **投影坐标系（PCS）**：通过数学投影将地球表面映射到平面，使用 x、y 坐标表示，如 CGCS2000 3-degree Gauss-Kruger zone 38（EPSG:4547）
+
+### proj4 坐标转换
+
+proj4 是一个开源的坐标转换库，支持数千种坐标系的相互转换：
+
+```tsx
+import proj4 from "proj4";
+
+// 定义投影坐标系
+proj4.defs(
+  "EPSG:4547",
+  "+proj=tmerc +lat_0=0 +lon_0=114 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs"
+);
+
+// 从 EPSG:4547 转换到 WGS84（EPSG:4326）
+const [lon, lat] = proj4("EPSG:4547", "EPSG:4326", [-219284.60702296568, 3295137.2366858963]);
+```
+
+## 关键代码
+
+### 定义坐标系
+
+在使用前需要先定义投影坐标系的参数（projDefs.ts）：
+
+```tsx
+import proj4 from "proj4";
+
+// 定义 CGCS2000 3-degree Gauss-Kruger zone 38
+proj4.defs(
+  "EPSG:4547",
+  "+proj=tmerc +lat_0=0 +lon_0=114 +k=1 +x_0=500000 +y_0=0 " +
+  "+ellps=GRS80 +units=m +no_defs"
+);
+
+// 定义其他需要的坐标系
+proj4.defs("EPSG:2000", "+proj=tmerc +lat_0=0 +lon_0=-62 ...");
+```
+
+### 坐标转换与飞行定位
+
+```tsx
+// 转换投影坐标到经纬度
+const convertedCoords = proj4(
+  "EPSG:4547",                    // 源坐标系
+  "EPSG:4326",                    // 目标坐标系（WGS84）
+  [494574.84309478942, 2522478.3074803744]  // 投影坐标 [x, y]
+);
+
+// 使用转换后的经纬度定位相机
+viewer.camera.flyTo({
+  destination: Cartesian3.fromDegrees(
+    convertedCoords[0],  // 经度
+    convertedCoords[1],  // 纬度
+    10000                // 高度（米）
+  ),
+  duration: 2,
+});
+```
+
+### 初始化 Viewer
+
+```tsx
+const viewer = new Viewer(el, {
+  baseLayerPicker: false,
+  animation: false,
+  timeline: false,
+  // ... 禁用其他 UI 控件
+});
+
+// 使用自定义底图
+const xyz = new UrlTemplateImageryProvider({
+  url: "//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg",
+});
+viewer.imageryLayers.addImageryProvider(xyz);
+```
+
+## 应用场景
+
+- **GIS 数据集成**：将国家 2000 坐标系（CGCS2000）或其他投影坐标系的数据加载到 Cesium 中
+- **测绘数据展示**：处理大地坐标、平面坐标等测绘成果数据
+- **多源数据融合**：整合来自不同坐标系的空间数据
+- **位置服务**：将第三方 API 返回的投影坐标转换为地理坐标进行展示
+- **工程应用**：在土木工程、城市规划等领域处理本地坐标系数据
+
+## 常用坐标系说明
+
+| EPSG 代码 | 坐标系名称 | 说明 |
+|----------|---------|------|
+| EPSG:4326 | WGS84 | 最常用的地理坐标系，GPS 使用的标准 |
+| EPSG:4490 | CGCS2000 | 中国国家 2000 大地坐标系 |
+| EPSG:3857 | Web Mercator | Web 地图常用投影（如百度、高德） |
+| EPSG:4547 | CGCS2000 / 3-degree Gauss-Kruger zone 38 | CGCS2000 三度分带投影第 38 带 |
+
+## 常见问题
+
+### 坐标系未定义报错
+
+如果在转换时遇到类似 `No projection definition for code EPSG:xxxx` 的错误，说明该坐标系尚未定义。解决步骤：
+
+1. 访问 [EPSG.io](https://epsg.io/) 网站
+2. 搜索你需要的 EPSG 代码（如 EPSG:4547）
+3. 在页面中找到 **Proj4js** 格式的定义字符串
+4. 复制该定义并添加到 `projDefs.ts` 文件中
+
+**示例**：
+
+在 [EPSG.io](https://epsg.io/) 搜索 EPSG:4547，找到 Proj4js 定义：
+
+```
++proj=tmerc +lat_0=0 +lon_0=114 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs
+```
+
+然后在 `projDefs.ts` 中添加：
+
+```tsx
+import proj4 from "proj4";
+
+proj4.defs(
+  "EPSG:4547",
+  "+proj=tmerc +lat_0=0 +lon_0=114 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs"
+);
+```
+
+导入该文件后即可使用该坐标系进行转换。
+
+## 注意事项
+
+1. **坐标系定义准确性**：投影参数必须准确，错误的参数会导致位置偏差
+2. **坐标顺序**：proj4 的输入输出格式为 `[经度/x, 纬度/y]`，注意顺序
+3. **坐标系查询**：务必在 [EPSG.io](https://epsg.io/) 查询并验证坐标系的 EPSG 代码和 proj4 定义
+4. **性能考虑**：批量转换时建议预处理数据，避免实时转换影响性能
+5. **坐标范围验证**：转换后验证经纬度是否在合理范围内（经度 -180~180，纬度 -90~90）
+6. **高程处理**：投影坐标通常不包含高程信息，需要单独处理
+7. **预先定义**：建议将项目中常用的坐标系统一在 `projDefs.ts` 中预先定义，避免运行时错误
+
+## 参考资料
+
+- [EPSG.io - 坐标系查询与转换](https://epsg.io/)
+- [Proj4js 官方文档](https://github.com/proj4js/proj4js)
+- [Cesium 坐标系统说明](https://cesium.com/learn/cesiumjs/ref-doc/Cartesian3.html)
