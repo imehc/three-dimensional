@@ -1,6 +1,5 @@
 import {
 	Cartesian3,
-	EasingFunction,
 	EllipsoidTerrainProvider,
 	EventHelper,
 	UrlTemplateImageryProvider,
@@ -14,7 +13,7 @@ import proj4 from "proj4";
 import './projDefs'
 
 /**
- * 加载SNP
+ * 坐标系转换
  *
  * @param el - 用于承载 Cesium Viewer 的 HTML 元素
  * @returns 返回配置好的 Viewer 实例

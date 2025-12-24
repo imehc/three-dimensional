@@ -12,7 +12,7 @@ import {
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
 /**
- * 加载SNP
+ * 3D Tiles
  *
  * @param el - 用于承载 Cesium Viewer 的 HTML 元素
  * @returns 返回配置好的 Viewer 实例

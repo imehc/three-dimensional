@@ -8,12 +8,13 @@ export default function App() {
 	useEffect(() => {
 		const container = ref.current;
 		if (!container) return;
-		const viewer = initViewer(container);
+		const { viewer, gui } = initViewer(container);
 
 		return () => {
 			if (!viewer.isDestroyed()) {
 				viewer.destroy();
 			}
+			gui.destroy();
 		};
 	}, []);
 
