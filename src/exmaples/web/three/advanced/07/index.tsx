@@ -1,8 +1,8 @@
 import { Environment, PointerLockControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import Container from "../../../componets/Container";
 import { Overlay } from "./Overlay";
 import { Physics } from "./Physics";
-import Container from "../../../componets/Container";
 
 /**
  * FPS 八叉树

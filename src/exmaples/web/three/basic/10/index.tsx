@@ -1,8 +1,8 @@
 import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { BoxGeometry, DodecahedronGeometry, SphereGeometry } from "three";
-import { Polyhedron } from "./Polyhedron";
 import Container from "../../../componets/Container";
+import { Polyhedron } from "./Polyhedron";
 
 /**
  * 助手
@@ -21,7 +21,7 @@ const Demo10: React.FC = () => {
 				<Polyhedron position={[0.75, -0.75, 0]} polyhedron={polyhedron} />
 				<Polyhedron position={[-0.75, 0.75, 0]} polyhedron={polyhedron} />
 				<Polyhedron position={[0.75, 0.75, 0]} polyhedron={polyhedron} />
-				 <OrbitControls />
+				<OrbitControls />
 				<axesHelper args={[5]} />
 				<gridHelper />
 				<Stats />

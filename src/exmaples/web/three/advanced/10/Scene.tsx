@@ -4,8 +4,8 @@ import {
 	Outline,
 	Selection,
 } from "@react-three/postprocessing";
+import type { GLTFResult } from "../../types/use_gltf";
 import { Selectable } from "./Selectable";
-import { GLTFResult } from "../../types/use_gltf";
 
 export const Scene = () => {
 	const { nodes, materials } = useGLTF(

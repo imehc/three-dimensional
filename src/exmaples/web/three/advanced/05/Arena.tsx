@@ -1,10 +1,10 @@
-import { type OrbitControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Easing, Tween } from "@tweenjs/tween.js";
 import { button, useControls } from "leva";
+import type { GLTFResult } from "../../types/use_gltf";
 import annotations from "./annotations.json";
 import { tweenGroup } from "./Tween";
-import { GLTFResult } from "../../types/use_gltf";
 
 interface Props {
 	controls: any;
@@ -55,6 +55,7 @@ export const Arena: React.FC<Props> = ({ controls }) => {
 
 	return (
 		<group dispose={null}>
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
 			<mesh
 				geometry={nodes.Cube004.geometry}
 				material={materials["Material.001"]}

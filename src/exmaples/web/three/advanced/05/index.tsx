@@ -1,9 +1,9 @@
 import { Environment, OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useRef } from "react";
+import Container from "../../../componets/Container";
 import { Arena } from "./Arena";
 import { Tween } from "./Tween";
-import Container from "../../../componets/Container";
 
 /**
  * 更改相机位置及其面向位置

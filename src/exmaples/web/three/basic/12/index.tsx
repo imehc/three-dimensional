@@ -6,8 +6,8 @@ import {
 	MeshPhongMaterial,
 	MeshStandardMaterial,
 } from "three";
-import { Polyhedron } from "./Polyhedron";
 import Container from "../../../componets/Container";
+import { Polyhedron } from "./Polyhedron";
 
 /**
  * 材质

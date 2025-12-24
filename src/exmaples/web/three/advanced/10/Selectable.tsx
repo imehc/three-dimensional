@@ -20,6 +20,7 @@ export const Selectable: React.FC<Props> = ({
 
 	return (
 		<Select enabled={hovered}>
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
 			<mesh
 				onPointerOver={(e) => {
 					e.stopPropagation();

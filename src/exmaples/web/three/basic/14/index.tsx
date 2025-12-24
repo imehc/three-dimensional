@@ -6,10 +6,10 @@ import {
 	MeshPhongMaterial,
 	MeshStandardMaterial,
 } from "three";
+import Container from "../../../componets/Container";
 import { Floor } from "./Floor";
 import { Lights } from "./Lights";
 import { Polyhedron } from "./Polyhedron";
-import Container from "../../../componets/Container";
 
 /**
  * 阴影

@@ -1,10 +1,10 @@
 import { useControls } from "leva";
 import { useMemo } from "react";
-import { BufferGeometry, Vector3, DoubleSide } from "three";
+import { BufferGeometry, DoubleSide, Vector3 } from "three";
 
 export const Polyhedron = () => {
 	const geometry = useMemo(() => {
-		let g = new BufferGeometry();
+		const g = new BufferGeometry();
 		const points = [
 			new Vector3(-1, 1, -1), //c
 			new Vector3(-1, -1, 1), //b

@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import type { ThreeElements } from "@react-three/fiber";
-import { GLTFResult } from "../../types/use_gltf";
+import type { GLTFResult } from "../../types/use_gltf";
 
 type GroupProps = ThreeElements["group"];
 

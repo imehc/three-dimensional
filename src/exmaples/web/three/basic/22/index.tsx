@@ -1,8 +1,8 @@
 import { Center, Environment, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import Container from "../../../componets/Container";
 import { Button } from "./Button";
 import { Rig } from "./Rig";
-import Container from "../../../componets/Container";
 
 /**
  * 使用插值 （Lerp） 对对象变换和材质属性进行动画处理。

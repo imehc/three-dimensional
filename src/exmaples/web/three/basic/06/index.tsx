@@ -1,8 +1,8 @@
 import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { BoxGeometry, DodecahedronGeometry, SphereGeometry } from "three";
-import { Polyhedron } from "./Polyhedron";
 import Container from "../../../componets/Container";
+import { Polyhedron } from "./Polyhedron";
 
 /**
  * 统计面板

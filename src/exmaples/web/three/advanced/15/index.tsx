@@ -7,8 +7,8 @@ import {
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Group } from "@tweenjs/tween.js";
 import { Suspense, useRef } from "react";
-import { Model } from "./Scan";
 import Container from "../../../componets/Container";
+import { Model } from "./Scan";
 
 // Create a shared TWEEN group for this demo
 export const tweenGroup = new Group();
@@ -28,7 +28,9 @@ export const Demo2v15 = () => {
 					<Tween />
 				</Suspense>
 			</Canvas>
-			<div className="absolute left-2 top-2">Doubleclick to change OrbitControls target</div>
+			<div className="absolute left-2 top-2">
+				Doubleclick to change OrbitControls target
+			</div>
 		</Container>
 	);
 };

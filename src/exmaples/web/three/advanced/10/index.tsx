@@ -1,8 +1,8 @@
 import { Environment, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import Container from "../../../componets/Container";
 import { Scene } from "./Scene";
 import { Teleport } from "./Teleport";
-import Container from "../../../componets/Container";
 
 /**
  * 平滑过渡

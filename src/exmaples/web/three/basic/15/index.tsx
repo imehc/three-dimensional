@@ -1,38 +1,26 @@
 import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import Container from "../../../componets/Container";
 import { Floor } from "./Floor";
 import { Lights } from "./Lights";
 import { Polyhedron } from "./Polyhedron";
-import Container from "../../../componets/Container";
 
 const Scene = () => {
 	const texture = useLoader(TextureLoader, "/imgs/grid.png");
 	return (
 		<>
 			<Lights />
-			<Polyhedron
-				name="meshBasicMaterial"
-				position={[-3, 1, 0]}
-			>
+			<Polyhedron name="meshBasicMaterial" position={[-3, 1, 0]}>
 				<meshBasicMaterial map={texture} />
 			</Polyhedron>
-			<Polyhedron
-				name="meshNormalMaterial"
-				position={[-1, 1, 0]}
-			>
+			<Polyhedron name="meshNormalMaterial" position={[-1, 1, 0]}>
 				<meshNormalMaterial flatShading />
 			</Polyhedron>
-			<Polyhedron
-				name="meshPhongMaterial"
-				position={[1, 1, 0]}
-			>
+			<Polyhedron name="meshPhongMaterial" position={[1, 1, 0]}>
 				<meshPhongMaterial flatShading map={texture} />
 			</Polyhedron>
-			<Polyhedron
-				name="meshStandardMaterial"
-				position={[3, 1, 0]}
-			>
+			<Polyhedron name="meshStandardMaterial" position={[3, 1, 0]}>
 				<meshStandardMaterial flatShading map={texture} />
 			</Polyhedron>
 			<Floor />

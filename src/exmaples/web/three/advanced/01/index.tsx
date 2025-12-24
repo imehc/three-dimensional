@@ -2,10 +2,10 @@ import { Environment, OrbitControls, Stats } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Group } from "@tweenjs/tween.js";
 import { Suspense, useRef } from "react";
+import Container from "../../../componets/Container";
 import { Annotations } from "./Annotations";
 import { House } from "./House";
 import { Loader } from "./Loader";
-import Container from "../../../componets/Container";
 
 // Create a shared TWEEN group for this demo
 export const tweenGroup = new Group();

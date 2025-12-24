@@ -1,7 +1,7 @@
 import { ContactShadows, Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Model } from "./Model";
 import Container from "../../../componets/Container";
+import { Model } from "./Model";
 
 /**
  * GLTFJSX 模型转换为jsx

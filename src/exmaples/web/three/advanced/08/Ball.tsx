@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
-import { Vector3, Quaternion, Mesh, GridHelper } from "three";
+import { type GridHelper, type Mesh, Quaternion, Vector3 } from "three";
 import { useKeyboard } from "./use_keyboard";
 
 export const Ball: React.FC<{

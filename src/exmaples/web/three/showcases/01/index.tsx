@@ -247,10 +247,10 @@ export const CarColor: FC = () => {
 	return (
 		<Container>
 			<div
-				className="relative overflow-hidden overscroll-none w-full h-full bg-[#333] text-[#bbb] text-sm"
+				className="tw:relative tw:overflow-hidden tw:overscroll-none tw:w-full tw:h-full tw:bg-[#333] tw:text-[#bbb] tw:text-sm"
 			>
-				<div className="absolute top-0 left-0 w-full p-4 text-center z-10">
-					<div className="inline-block mx-2.5">
+				<div className="tw:absolute tw:top-0 tw:left-0 tw:w-full tw:p-4 tw:text-center tw:z-10">
+					<div className="tw:inline-block tw:mx-2.5">
 						<input
 							type="color"
 							defaultValue="#ff0000"
@@ -259,7 +259,7 @@ export const CarColor: FC = () => {
 						<br />
 						<span>Body</span>
 					</div>
-					<div className="inline-block mx-2.5">
+					<div className="tw:inline-block tw:mx-2.5">
 						<input
 							type="color"
 							defaultValue="#ffffff"
@@ -268,7 +268,7 @@ export const CarColor: FC = () => {
 						<br />
 						<span>Hub</span>
 					</div>
-					<div className="inline-block mx-2.5">
+					<div className="tw:inline-block tw:mx-2.5">
 						<input
 							type="color"
 							defaultValue="#ffffff"
@@ -278,7 +278,7 @@ export const CarColor: FC = () => {
 						<span>Glass</span>
 					</div>
 				</div>
-				<div ref={containerRef} className="w-full h-full" />
+				<div ref={containerRef} className="tw:w-full tw:h-full" />
 			</div>
 		</Container>
 	);

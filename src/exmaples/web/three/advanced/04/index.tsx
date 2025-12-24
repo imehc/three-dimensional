@@ -1,8 +1,8 @@
 import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import Container from "../../../componets/Container";
 import { Box } from "./Box";
 import { Rig } from "./Rig";
-import Container from "../../../componets/Container";
 
 /**
  * 事件传播

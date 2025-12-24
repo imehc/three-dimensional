@@ -19,8 +19,8 @@ export default function App() {
 	}, []);
 
 	return (
-		<Container className="md:w-2xl">
-			<div className="size-full" ref={ref} />
+		<Container>
+			<div className="tw:size-full" ref={ref} />
 		</Container>
 	);
 }

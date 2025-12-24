@@ -1,7 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import { Easing, Tween } from "@tweenjs/tween.js";
+import type { GLTFResult } from "../../types/use_gltf";
 import { tweenGroup } from "./index";
-import { GLTFResult } from "../../types/use_gltf";
 
 export function Model({ controls }: any) {
 	const { nodes, materials } = useGLTF(
@@ -13,6 +13,7 @@ export function Model({ controls }: any) {
 			<mesh geometry={nodes.Mesh_0.geometry} material={materials.material_0} />
 
 			{/* A box used for raycasting since the photogrammetry geometry has so many faces that it makes the raycaster slow */}
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
 			<mesh
 				position={[0, -0.25, -0.6]}
 				rotation-y={-Math.PI / 64}

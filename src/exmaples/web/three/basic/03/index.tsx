@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
-import { Box } from "./Box";
 import Container from "../../../componets/Container";
+import { Box } from "./Box";
 
 /**
  * 场景状态

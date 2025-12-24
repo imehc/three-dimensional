@@ -1,8 +1,8 @@
 import { useGLTF } from "@react-three/drei";
 import { useMemo, useRef, useState } from "react";
 import type { Mesh } from "three";
+import type { GLTFResult } from "../../types/use_gltf";
 import MaterialMenu from "./MaterialMenu";
-import { GLTFResult } from "../../types/use_gltf";
 
 export default function ArmChair() {
 	const [selected, setSelected] = useState(0);

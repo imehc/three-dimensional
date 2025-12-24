@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useRef } from "react";
-import { maxOrbit, random } from "./util";
 import Container from "../../componets/Container";
+import { maxOrbit, random } from "./util";
 
 type Star = {
 	orbitRadius: number;
@@ -163,7 +163,7 @@ export default function Canvas02() {
 
 	return (
 		<Container ref={containerRef}>
-			<canvas ref={ref} className="block" />
+			<canvas ref={ref} className="tw:block" />
 		</Container>
 	);
 }

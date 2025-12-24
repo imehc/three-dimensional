@@ -1,7 +1,7 @@
-import { Stats, OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Polyhedron } from "./Polyhedron";
 import Container from "../../../componets/Container";
+import { Polyhedron } from "./Polyhedron";
 
 /**
  * 修改几何属性

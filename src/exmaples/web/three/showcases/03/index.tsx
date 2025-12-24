@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type Model from "./vanilla-bird";
-import Loading from "../../../componets/Loading";
 import Container from "../../../componets/Container";
+import Loading from "../../../componets/Loading";
+import type Model from "./vanilla-bird";
 
 export default function Bird() {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -50,7 +50,7 @@ export default function Bird() {
 			{isLoading && <Loading />}
 			<div
 				ref={containerRef}
-				className="w-full h-full"
+				className="tw:size-full"
 				style={{ opacity: isLoading ? 0 : 1, transition: "opacity 0.3s" }}
 			/>
 		</Container>

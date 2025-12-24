@@ -1,9 +1,9 @@
 import { ContactShadows, OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
+import Container from "../../../componets/Container";
 import { Env } from "./Env";
 import { Model } from "./Model";
-import Container from "../../../componets/Container";
 
 /**
  * GLTF场景

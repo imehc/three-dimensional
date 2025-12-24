@@ -6,9 +6,9 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
+import Container from "../../../componets/Container";
 import ArmChair from "./ArmChair";
 import Room from "./Room";
-import Container from "../../../componets/Container";
 
 /**
  * 物料拾取 copy

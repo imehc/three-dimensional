@@ -1,4 +1,6 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import Container from "../../componets/Container";
+import Loading from "../../componets/Loading";
 import { useFileUpload } from "../hooks/useFileUpload";
 import { useImageLoader } from "../hooks/useImageLoader";
 import {
@@ -7,8 +9,6 @@ import {
 	exportCanvas,
 	initializeCanvas,
 } from "../utils/canvasUtils";
-import Loading from "../../componets/Loading";
-import Container from "../../componets/Container";
 
 export default function Canvas01() {
 	const originalCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -137,24 +137,24 @@ export default function Canvas01() {
 	};
 
 	return (
-		<Container className="flex flex-col sm:w-full md:w-2xl aspect-video items-center justify-center">
-			<div className="w-full max-w-7xl flex flex-col h-full p-4">
-				<div className="flex gap-2 mb-4 justify-center flex-wrap">
+		<Container className="tw:flex tw:flex-col tw:sm:w-full tw:md:w-2xl tw:aspect-video tw:items-center tw:justify-center">
+			<div className="tw:w-full tw:max-w-7xl tw:flex tw:flex-col tw:h-full tw:p-4">
+				<div className="tw:flex tw:gap-2 tw:mb-4 tw:justify-center tw:flex-wrap">
 					<input
 						type="file"
 						ref={fileInputRef}
 						onChange={handleFileChange}
 						accept="image/*"
-						className="hidden"
+						className="tw:hidden"
 					/>
 					<button
 						type="button"
 						onClick={handleUploadClick}
 						disabled={isProcessing}
-						className={`px-4 py-2 text-white rounded transition-colors ${
+						className={`tw:px-4 tw:py-2 tw:text-white tw:rounded tw:transition-colors ${
 							isProcessing
-								? "bg-gray-400 cursor-not-allowed"
-								: "bg-primary hover:bg-primary-dark"
+								? "tw:bg-gray-400 tw:cursor-not-allowed"
+								: "tw:bg-primary tw:hover:bg-primary-dark"
 						}`}
 					>
 						选择图片
@@ -163,10 +163,10 @@ export default function Canvas01() {
 						type="button"
 						onClick={handleRefreshClick}
 						disabled={!imageSrc || isProcessing}
-						className={`px-4 py-2 text-white rounded transition-colors ${
+						className={`tw:px-4 tw:py-2 tw:text-white tw:rounded tw:transition-colors ${
 							!imageSrc || isProcessing
-								? "bg-gray-400 cursor-not-allowed"
-								: "bg-accent hover:bg-accent-dark"
+								? "tw:bg-gray-400 tw:cursor-not-allowed"
+								: "tw:bg-accent tw:hover:bg-accent-dark"
 						}`}
 					>
 						刷新
@@ -175,10 +175,10 @@ export default function Canvas01() {
 						type="button"
 						onClick={handleExportOriginalClick}
 						disabled={!imageLoaded || isProcessing}
-						className={`px-4 py-2 text-white rounded transition-colors ${
+						className={`tw:px-4 tw:py-2 tw:text-white tw:rounded tw:transition-colors ${
 							!imageLoaded || isProcessing
-								? "bg-gray-400 cursor-not-allowed"
-								: "bg-info hover:bg-info-dark"
+								? "tw:bg-gray-400 tw:cursor-not-allowed"
+								: "tw:bg-info tw:hover:bg-info-dark"
 						}`}
 					>
 						导出原始图片
@@ -187,18 +187,18 @@ export default function Canvas01() {
 						type="button"
 						onClick={handleExportClick}
 						disabled={!imageLoaded || isProcessing}
-						className={`px-4 py-2 text-white rounded transition-colors ${
+						className={`tw:px-4 tw:py-2 tw:text-white tw:rounded tw:transition-colors ${
 							!imageLoaded || isProcessing
-								? "bg-gray-400 cursor-not-allowed"
-								: "bg-secondary"
+								? "tw:bg-gray-400 tw:cursor-not-allowed"
+								: "tw:bg-secondary"
 						}`}
 					>
 						导出马赛克图片
 					</button>
 				</div>
 				{/* 添加 blockSize 控制器 */}
-				<div className="flex gap-2 mb-4 justify-center items-center">
-					<span className="text-sm font-medium">马赛克块大小:</span>
+				<div className="tw:flex tw:gap-2 tw:mb-4 tw:justify-center tw:items-center">
+					<span className="tw:text-sm tw:font-medium">马赛克块大小:</span>
 					<input
 						type="range"
 						min="2"
@@ -208,12 +208,14 @@ export default function Canvas01() {
 						onMouseUp={handleBlockSizeChangeComplete}
 						onTouchEnd={handleBlockSizeChangeComplete}
 						disabled={isProcessing}
-						className="range range-primary w-48"
+						className="tw:range tw:range-primary tw:w-48"
 					/>
-					<span className="text-sm font-medium w-8 whitespace-nowrap">{blockSize}px</span>
+					<span className="tw:text-sm tw:font-medium tw:w-8 tw:whitespace-nowrap">
+						{blockSize}px
+					</span>
 				</div>
-				<div ref={containerRef} className="flex flex-1 gap-4 min-h-0">
-					<div className="flex-1 flex items-center justify-center relative">
+				<div ref={containerRef} className="tw:flex tw:flex-1 tw:gap-4 tw:min-h-0">
+					<div className="tw:flex-1 tw:flex tw:items-center tw:justify-center tw:relative">
 						<canvas
 							ref={originalCanvasRef}
 							style={{
@@ -221,11 +223,11 @@ export default function Canvas01() {
 								height: canvasSize.height || "auto",
 								display: canvasSize.width ? "block" : "none",
 							}}
-							className="border border-secondary rounded-xl shadow-lg"
+							className="tw:border tw:border-secondary tw:rounded-xl tw:shadow-lg"
 						/>
 						{!imageLoaded && <Loading />}
 					</div>
-					<div className="flex-1 flex items-center justify-center relative">
+					<div className="tw:flex-1 tw:flex tw:items-center tw:justify-center tw:relative">
 						<canvas
 							ref={mosaicCanvasRef}
 							style={{
@@ -233,7 +235,7 @@ export default function Canvas01() {
 								height: canvasSize.height || "auto",
 								display: canvasSize.width ? "block" : "none",
 							}}
-							className="border border-secondary rounded-xl shadow-lg"
+							className="tw:border tw:border-secondary tw:rounded-xl tw:shadow-lg"
 						/>
 						{(!imageLoaded || isProcessing) && <Loading />}
 					</div>

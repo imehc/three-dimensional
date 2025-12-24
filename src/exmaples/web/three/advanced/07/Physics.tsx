@@ -2,13 +2,13 @@ import { useGLTF } from "@react-three/drei";
 import { useCallback, useRef } from "react";
 import type { Sphere, Vector3 } from "three";
 import type { Capsule } from "three/addons/math/Capsule.js";
+import type { GLTFResult } from "../../types/use_gltf";
 import { Ball } from "./Ball";
 import * as Constants from "./Constants";
 import { Player } from "./Player";
 import { SphereCollider } from "./SphereCollider";
 import { useOctree } from "./use_octree";
 import { useOctreeHelper } from "./use_octree_helper";
-import { GLTFResult } from "../../types/use_gltf";
 
 export type Collider = {
 	sphere?: Sphere;

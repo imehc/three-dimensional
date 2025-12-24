@@ -1,7 +1,7 @@
 import { Bounds, Environment, OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Squircle } from "./Squircle";
 import Container from "../../../componets/Container";
+import { Squircle } from "./Squircle";
 
 /**
  * Squircle
