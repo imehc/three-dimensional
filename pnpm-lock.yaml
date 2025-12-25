@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@cesium-china/cesium-map':
+        specifier: ^1.0.0
+        version: 1.0.0(cesium@1.136.0)
       '@docusaurus/core':
         specifier: 3.9.2
         version: 3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.3))(@rspack/core@1.6.7)(@swc/core@1.15.5)(debug@4.4.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)
@@ -117,6 +120,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.1.18
+      '@types/cesium-china__cesium-map':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3
@@ -888,6 +894,11 @@ packages:
 
   '@braintree/sanitize-url@7.1.1':
     resolution: {integrity: sha512-i1L7noDNxtFyL5DmZafWy1wRVhGehQmzZaz1HiN5e7iylJMSZR7ekOV7NsIqa5qBldlLrsKv4HbgFUVlQrz8Mw==}
+
+  '@cesium-china/cesium-map@1.0.0':
+    resolution: {integrity: sha512-G4ro4MMnoNUVh9Z4KTXDE31F2d2hddju81MfRPUcs31lK10eugJVgKXmXYzbY7WyyvFmcRyVydKOvHy5jYSKGw==}
+    peerDependencies:
+      cesium: ^1.118.2
 
   '@cesium/engine@22.1.0':
     resolution: {integrity: sha512-grL8/wiIkKLFG+FrizORhUTMpOcFMFawa0fmLH3I/1K46TcDQn6Gom+qrcGqbJoc4diYM75xsAC9M8Yajgh4rQ==}
@@ -2522,6 +2533,9 @@ packages:
 
   '@types/bonjour@3.5.13':
     resolution: {integrity: sha512-z9fJ5Im06zvUL548KvYNecEVlA7cVDkGUi6kZusb04mpyEFKCIZJvloCcmpmLaIahDpOQGHaHmG6imtPMmPXGQ==}
+
+  '@types/cesium-china__cesium-map@1.0.0':
+    resolution: {integrity: sha512-hSzfGOpZmAS0iZFYgWPt6UVBcmZbilUFAYBquBcDLXxBK8/LmkdFvYHINTAviyETwi/8dhQFmm3wiIcurWWeyw==}
 
   '@types/connect-history-api-fallback@1.5.4':
     resolution: {integrity: sha512-n6Cr2xS1h4uAulPRdlw6Jl6s1oG8KrVilPN2yUITEs+K48EzMJJ3W1xy8K5eWuFvjp3R74AOIGSmp2UfBJ8HFw==}
@@ -7943,6 +7957,10 @@ snapshots:
 
   '@braintree/sanitize-url@7.1.1': {}
 
+  '@cesium-china/cesium-map@1.0.0(cesium@1.136.0)':
+    dependencies:
+      cesium: 1.136.0
+
   '@cesium/engine@22.1.0':
     dependencies:
       '@cesium/wasm-splats': 0.1.0-alpha.2
@@ -10172,6 +10190,10 @@ snapshots:
   '@types/bonjour@3.5.13':
     dependencies:
       '@types/node': 25.0.3
+
+  '@types/cesium-china__cesium-map@1.0.0':
+    dependencies:
+      cesium: 1.136.0
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:

@@ -10,7 +10,7 @@ import Loading from '@site/src/exmaples/web/componets/Loading'
 
 # 底图
 
-本示例展示如何在 Cesium 中加载和切换多种影像底图服务,包括单张图片、XYZ 瓦片、WMS、WMTS 等多种底图服务类型,并通过 GUI 控制面板实现底图的动态切换。
+本示例展示如何在 Cesium 中加载和切换多种影像底图服务,包括高德地图、单张图片、XYZ 瓦片、WMS、WMTS 等多种底图服务类型,并通过 GUI 控制面板实现底图的动态切换。
 
 <BrowserOnly fallback={<Loading/>}>
   {() => <App />}
@@ -23,6 +23,7 @@ import Loading from '@site/src/exmaples/web/componets/Loading'
 示例实现了以下几种底图加载方式:
 
 - **SingleTileImageryProvider**:加载单张图片作为底图
+- **AMapImageryProvider**:加载高德地图底图服务(支持影像、电子地图等)
 - **UrlTemplateImageryProvider**:通过 URL 模板加载 XYZ 瓦片服务(支持 Mars3D、Mapbox 等)
 - **WebMapServiceImageryProvider**:加载 WMS 服务
 - **WebMapTileServiceImageryProvider**:加载 WMTS 服务(如天地图)
@@ -87,6 +88,21 @@ viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
 viewer.scene.terrainProvider = new EllipsoidTerrainProvider({});
 ```
 
+### 高德地图服务
+
+使用 `@cesium-china/cesium-map` 包提供的 AMapImageryProvider:
+
+```tsx
+import { AMapImageryProvider } from "@cesium-china/cesium-map";
+
+const options = {
+  style: "img",  // 样式: img(影像)、elec(电子地图)、cva(中文注记)
+  crs: "WGS84",  // 坐标系: WGS84 或 GCJ02(默认)
+};
+const provider = new AMapImageryProvider(options);
+viewer.imageryLayers.addImageryProvider(provider);
+```
+
 ### XYZ 瓦片服务
 
 ```tsx
@@ -141,11 +157,16 @@ viewer.imageryLayers.addImageryProvider(provider);
 3. **Token 管理**:天地图等服务需要申请 Token,注意保护和更新
 4. **性能优化**:大量图层叠加会影响渲染性能,按需加载
 5. **坐标系统**:注意不同底图服务的坐标系(WebMercator vs Geographic)
+   - 高德地图默认使用 GCJ02 坐标系(火星坐标系),如需使用 WGS84 坐标系需要显式指定 `crs: "WGS84"`
+   - 天地图、OpenStreetMap 等使用 WGS84 坐标系
+   - 使用不同坐标系的底图时可能出现位置偏移,需要进行坐标转换
 6. **组件清理**:页面卸载时记得销毁 Viewer 和 GUI 实例
 
 ## 参考资料
 
 - [Cesium ImageryLayer 官方文档](https://cesium.com/learn/cesiumjs/ref-doc/ImageryLayer.html)
+- [@cesium-china/cesium-map - 高德地图集成包](https://github.com/CesiumChina/cesium-map)
+- [高德地图 JavaScript API](https://lbs.amap.com/api/javascript-api-v2/summary)
 - [天地图 API 文档](https://lbs.tianditu.gov.cn/server/guide.html)
 - [dat.GUI 使用指南](https://github.com/dataarts/dat.gui)
 - [Cesium Examples](https://github.com/jiawanlong/Cesium-Examples)

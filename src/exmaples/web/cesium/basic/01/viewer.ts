@@ -13,6 +13,10 @@ import CesiumNavigation, {
 	type NavigationOptions,
 } from "cesium-navigation-es6";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+import {
+	AMapImageryProvider,
+	type AMapImageryProviderOptions,
+} from "@cesium-china/cesium-map";
 import { GUI } from "dat.gui";
 
 /**
@@ -54,6 +58,7 @@ export function initViewer(el: HTMLElement) {
 	const imageryTypes = {
 		map1: "/cesium/01/word.jpg",
 		map2: "/cesium/01/world_b.jpg",
+		amap: "",
 		xyz: "//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg",
 		mapbox:
 			"https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.webp?sku=1016Ab1dNMw2X&access_token=pk.eyJ1IjoidHJhbXBqd2wiLCJhIjoiY2xhYXIxbHExMDN3dzN3cGliOHdrMThxMiJ9.6er2aYb1EBjSsK1-t9d2-w",
@@ -89,6 +94,15 @@ export function initViewer(el: HTMLElement) {
 			switch (value) {
 				case "map2":
 					newLayer = loadBaseLayer(imageryTypes.map2);
+					break;
+				case "amap":
+					{
+						const options = {
+							style: "img", // style: img、elec、cva
+							crs: "WGS84", // 使用84坐标系，默认为：GCJ02
+						} satisfies AMapImageryProviderOptions;
+						newLayer = new ImageryLayer(new AMapImageryProvider(options));
+					}
 					break;
 				case "xyz":
 					newProvider = new UrlTemplateImageryProvider({

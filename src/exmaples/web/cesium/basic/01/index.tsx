@@ -1,6 +1,7 @@
+import type { Viewer } from "cesium";
+import type { GUI } from "dat.gui";
 import { useEffect, useRef } from "react";
 import Container from "../../../componets/Container";
-import { initViewer } from "./viewer";
 
 export default function App() {
 	const ref = useRef<HTMLDivElement>(null);
@@ -8,13 +9,24 @@ export default function App() {
 	useEffect(() => {
 		const container = ref.current;
 		if (!container) return;
-		const { viewer, gui } = initViewer(container);
+
+		let viewer: Viewer;
+		let gui: GUI;
+
+		// Dynamic import to ensure Cesium is only loaded on the client side
+		import("./viewer").then(({ initViewer }) => {
+			const result = initViewer(container);
+			viewer = result.viewer;
+			gui = result.gui;
+		});
 
 		return () => {
-			if (!viewer.isDestroyed()) {
+			if (viewer && !viewer.isDestroyed()) {
 				viewer.destroy();
 			}
-			gui.destroy();
+			if (gui) {
+				gui.destroy();
+			}
 		};
 	}, []);
 
