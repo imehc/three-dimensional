@@ -1,0 +1,214 @@
+---
+sidebar_position: 4
+title: WKT互转GEOJSON
+tags: [Javascript]
+---
+
+import App from '@site/src/exmaples/web/cesium/basic/04';
+
+# WKT互转GEOJSON
+
+本示例展示如何使用 Terraformer WKT 库在 Well-Known Text (WKT) 格式和 GeoJSON 格式之间进行相互转换。WKT 是一种文本标记语言，用于表示矢量几何对象，而 GeoJSON 是一种基于 JSON 的地理空间数据交换格式，两者在 GIS 应用中都被广泛使用。
+
+<App />
+
+## 核心功能
+
+### WKT 和 GeoJSON 基础概念
+
+**WKT (Well-Known Text)**：
+- 一种文本标记语言，用于表示矢量几何对象
+- 格式简洁，易于人类阅读和编写
+- 示例：`POINT(30 10)`、`POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))`
+
+**GeoJSON**：
+- 基于 JSON 的地理空间数据交换格式
+- 易于 Web 应用解析和处理
+- 示例：`{"type": "Point", "coordinates": [30, 10]}`
+
+### @terraformer/wkt 库
+
+Terraformer 是一个用于处理地理空间数据的开源工具库，提供了便捷的 WKT 与 GeoJSON 转换功能：
+
+```tsx
+import { wktToGeoJSON, geojsonToWKT } from "@terraformer/wkt";
+
+// WKT 转 GeoJSON
+const geojson = wktToGeoJSON("POINT(30 10)");
+// 结果: {"type": "Point", "coordinates": [30, 10]}
+
+// GeoJSON 转 WKT
+const wkt = geojsonToWKT({
+  type: "Point",
+  coordinates: [30, 10]
+});
+// 结果: "POINT(30 10)"
+```
+
+## 关键代码
+
+### 安装依赖
+
+```bash
+npm install @terraformer/wkt
+```
+
+### WKT 转 GeoJSON
+
+```tsx
+import { wktToGeoJSON } from "@terraformer/wkt";
+
+// 点
+const point = wktToGeoJSON("POINT(30 10)");
+// {"type": "Point", "coordinates": [30, 10]}
+
+// 线
+const lineString = wktToGeoJSON("LINESTRING(30 10, 10 30, 40 40)");
+// {"type": "LineString", "coordinates": [[30, 10], [10, 30], [40, 40]]}
+
+// 多边形
+const polygon = wktToGeoJSON(
+  "POLYGON((35 10, 45 45, 15 40, 10 20, 35 10))"
+);
+// {"type": "Polygon", "coordinates": [[[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]]]}
+```
+
+### GeoJSON 转 WKT
+
+```tsx
+import { geojsonToWKT } from "@terraformer/wkt";
+
+// 点
+const pointWKT = geojsonToWKT({
+  type: "Point",
+  coordinates: [30, 10]
+});
+// "POINT(30 10)"
+
+// 线
+const lineWKT = geojsonToWKT({
+  type: "LineString",
+  coordinates: [[30, 10], [10, 30], [40, 40]]
+});
+// "LINESTRING(30 10, 10 30, 40 40)"
+
+// 多边形（带孔）
+const polygonWKT = geojsonToWKT({
+  type: "Polygon",
+  coordinates: [
+    // 外环
+    [[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],
+    // 内环（孔）
+    [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]
+  ]
+});
+// "POLYGON((100 0, 101 0, 101 1, 100 1, 100 0), (100.2 0.2, 100.8 0.2, 100.8 0.8, 100.2 0.8, 100.2 0.2))"
+```
+
+### 错误处理
+
+```tsx
+try {
+  const result = wktToGeoJSON(wktString);
+  console.log(result);
+} catch (error) {
+  console.error("WKT 格式无效:", error.message);
+}
+```
+
+## 应用场景
+
+- **数据格式转换**：在不同 GIS 系统之间迁移数据时进行格式转换
+- **数据库集成**：将 PostGIS 等空间数据库的 WKT 格式数据转换为 Web 友好的 GeoJSON
+- **地图可视化**：将 WKT 格式的几何数据转换为 GeoJSON 用于地图库（如 Leaflet、Mapbox、Cesium）渲染
+- **API 数据交互**：处理不同 API 返回的不同格式的地理空间数据
+- **空间分析**：在前端进行空间几何运算前的数据格式统一
+- **数据导入导出**：支持用户以不同格式导入导出地理数据
+
+## 支持的几何类型
+
+| WKT 类型 | GeoJSON 类型 | 示例 |
+|----------|-------------|------|
+| POINT | Point | `POINT(30 10)` |
+| LINESTRING | LineString | `LINESTRING(30 10, 10 30, 40 40)` |
+| POLYGON | Polygon | `POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))` |
+| MULTIPOINT | MultiPoint | `MULTIPOINT((10 40), (40 30))` |
+| MULTILINESTRING | MultiLineString | `MULTILINESTRING((10 10, 20 20), (15 15, 30 15))` |
+| MULTIPOLYGON | MultiPolygon | `MULTIPOLYGON(((30 20, 45 40, 10 40, 30 20)))` |
+| GEOMETRYCOLLECTION | GeometryCollection | `GEOMETRYCOLLECTION(POINT(4 6), LINESTRING(4 6, 7 10))` |
+
+## 常见问题
+
+### 坐标顺序问题
+
+WKT 和 GeoJSON 的坐标顺序可能导致混淆：
+
+- **WKT**：通常使用 `X Y` 格式（即 `经度 纬度`）
+- **GeoJSON**：规范要求使用 `[经度, 纬度]` 格式
+
+好在 @terraformer/wkt 库会自动处理这种转换，但在手动处理时需要注意。
+
+### 多边形孔洞（Holes）
+
+带有内环（孔洞）的多边形在 WKT 和 GeoJSON 中都支持：
+
+```tsx
+// GeoJSON 格式
+{
+  "type": "Polygon",
+  "coordinates": [
+    [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],  // 外环
+    [[2, 2], [8, 2], [8, 8], [2, 8], [2, 2]]       // 内环（孔）
+  ]
+}
+
+// 对应的 WKT 格式
+// POLYGON((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 8 2, 8 8, 2 8, 2 2))
+```
+
+### 精度损失
+
+在进行多次转换时可能会出现浮点数精度损失，建议：
+
+1. 减少不必要的往返转换
+2. 在关键应用中考虑使用固定精度的坐标值
+3. 转换后验证关键坐标点的精度
+
+## 注意事项
+
+1. **格式验证**：转换前确保输入数据格式正确，建议添加 try-catch 错误处理
+2. **坐标有效性**：验证坐标值是否在合理范围内（经度 -180~180，纬度 -90~90）
+3. **多边形闭合**：多边形的首尾坐标必须相同，形成闭合环
+4. **右手法则**：多边形外环应按逆时针方向定义，内环（孔）按顺时针方向定义
+5. **坐标顺序一致性**：确保整个应用中坐标顺序使用一致（避免经纬度混淆）
+6. **大数据量处理**：处理大量几何对象时注意性能，考虑分批处理
+7. **Z 坐标支持**：该库支持带高程的 3D 坐标，如 `POINT(30 10 5)`
+
+## 在 Cesium 中使用
+
+将 GeoJSON 数据加载到 Cesium：
+
+```tsx
+import { Viewer, GeoJsonDataSource } from "cesium";
+import { wktToGeoJSON } from "@terraformer/wkt";
+
+const viewer = new Viewer("cesiumContainer");
+
+// 将 WKT 转换为 GeoJSON
+const wkt = "POLYGON((120 30, 120 40, 130 40, 130 30, 120 30))";
+const geojson = wktToGeoJSON(wkt);
+
+// 加载到 Cesium
+const dataSource = await GeoJsonDataSource.load(geojson);
+viewer.dataSources.add(dataSource);
+
+// 视图飞到数据位置
+viewer.flyTo(dataSource);
+```
+
+## 参考资料
+
+- [@terraformer/wkt GitHub](https://github.com/terraformer-js/terraformer/tree/main/packages/wkt)
+- [GeoJSON 规范](https://geojson.org/)
+- [Well-Known Text (WKT) 维基百科](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+- [Cesium GeoJSON 加载文档](https://cesium.com/learn/cesiumjs/ref-doc/GeoJsonDataSource.html)

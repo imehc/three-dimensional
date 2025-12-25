@@ -1,0 +1,203 @@
+import { geojsonToWKT, wktToGeoJSON } from "@terraformer/wkt";
+import type { GeoJSON } from "geojson";
+import { useState } from "react";
+
+export default function App() {
+	const [mode, setMode] = useState<"wkt-to-geojson" | "geojson-to-wkt">(
+		"wkt-to-geojson",
+	);
+	const [input, setInput] = useState("");
+	const [output, setOutput] = useState("");
+	const [error, setError] = useState("");
+
+	const defaultWKT =
+		"POLYGON((102.797302689433 36.5936423859273,105.519115206186 29.4789248520356,100.346180647351 29.9699202912212))";
+	const defaultGeoJSON = JSON.stringify(
+		{
+			type: "Polygon",
+			coordinates: [
+				[
+					[100.0, 0.0],
+					[101.0, 0.0],
+					[101.0, 1.0],
+					[100.0, 1.0],
+					[100.0, 0.0],
+				],
+				[
+					[100.2, 0.2],
+					[100.8, 0.2],
+					[100.8, 0.8],
+					[100.2, 0.8],
+					[100.2, 0.2],
+				],
+			],
+		} satisfies GeoJSON,
+		null,
+		2,
+	);
+
+	const handleConvert = () => {
+		setError("");
+		setOutput("");
+
+		try {
+			if (mode === "wkt-to-geojson") {
+				const result = wktToGeoJSON(input);
+				setOutput(JSON.stringify(result, null, 2));
+			} else {
+				const geojson = JSON.parse(input);
+				const result = geojsonToWKT(geojson);
+				setOutput(result);
+			}
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "转换失败");
+		}
+	};
+
+	const handleModeToggle = () => {
+		const newMode =
+			mode === "wkt-to-geojson" ? "geojson-to-wkt" : "wkt-to-geojson";
+		setMode(newMode);
+		setInput("");
+		setOutput("");
+		setError("");
+	};
+
+	const loadExample = () => {
+		const example = mode === "wkt-to-geojson" ? defaultWKT : defaultGeoJSON;
+		setInput(example);
+		setOutput("");
+		setError("");
+	};
+
+	return (
+		<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+			<div className="max-w-7xl mx-auto">
+				<div className="bg-white rounded-xl shadow-lg p-8">
+					<h1 className="text-3xl font-bold text-slate-800 mb-6 text-center">
+						WKT ⇄ GeoJSON 转换器
+					</h1>
+
+					{/* 模式切换按钮 */}
+					<div className="flex justify-center gap-4 mb-6">
+						<button
+							type="button"
+							onClick={handleModeToggle}
+							className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 flex items-center gap-2"
+						>
+							<svg
+								className="w-5 h-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-label="切换转换方向"
+							>
+								<title>切换转换方向</title>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+								/>
+							</svg>
+							{mode === "wkt-to-geojson" ? "WKT → GeoJSON" : "GeoJSON → WKT"}
+						</button>
+						<button
+							type="button"
+							onClick={loadExample}
+							className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200"
+						>
+							加载示例
+						</button>
+					</div>
+
+					<div className="grid md:grid-cols-2 gap-6">
+						{/* 输入区域 */}
+						<div className="flex flex-col">
+							<div className="text-lg font-semibold text-slate-700 mb-2">
+								{mode === "wkt-to-geojson" ? "输入 WKT" : "输入 GeoJSON"}
+							</div>
+							<textarea
+								value={input}
+								onChange={(e) => setInput(e.target.value)}
+								placeholder={
+									mode === "wkt-to-geojson"
+										? "例如: POINT(30 10)"
+										: '例如: {"type": "Point", "coordinates": [30, 10]}'
+								}
+								className="flex-1 min-h-[400px] p-4 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-none"
+							/>
+							<button
+								type="button"
+								onClick={handleConvert}
+								disabled={!input.trim()}
+								className="mt-4 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-md transition-colors duration-200"
+							>
+								转换
+							</button>
+						</div>
+
+						{/* 输出区域 */}
+						<div className="flex flex-col">
+							<div className="text-lg font-semibold text-slate-700 mb-2">
+								{mode === "wkt-to-geojson" ? "输出 GeoJSON" : "输出 WKT"}
+							</div>
+							<div className="flex-1 min-h-[400px] p-4 border-2 border-slate-300 rounded-lg bg-slate-50 font-mono text-sm overflow-auto">
+								{error ? (
+									<div className="text-red-600 bg-red-50 p-4 rounded-lg border border-red-200">
+										<p className="font-semibold mb-1">❌ 错误:</p>
+										<p>{error}</p>
+									</div>
+								) : output ? (
+									<pre className="whitespace-pre-wrap break-words text-slate-800">
+										{output}
+									</pre>
+								) : (
+									<p className="text-slate-400 italic">
+										转换结果将显示在这里...
+									</p>
+								)}
+							</div>
+							{output && !error && (
+								<button
+									type="button"
+									onClick={() => {
+										navigator.clipboard.writeText(output);
+										alert("已复制到剪贴板!");
+									}}
+									className="mt-4 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200"
+								>
+									📋 复制结果
+								</button>
+							)}
+						</div>
+					</div>
+
+					{/* 使用说明 */}
+					<div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+						<h3 className="text-lg font-semibold text-blue-900 mb-3">
+							💡 使用说明
+						</h3>
+						<ul className="space-y-2 text-blue-800">
+							<li>
+								• 点击 <strong>"WKT → GeoJSON"</strong> 或{" "}
+								<strong>"GeoJSON → WKT"</strong> 按钮切换转换方向
+							</li>
+							<li>
+								• 点击 <strong>"加载示例"</strong> 加载示例数据
+							</li>
+							<li>• 在左侧输入框中输入需要转换的数据</li>
+							<li>
+								• 点击 <strong>"转换"</strong> 按钮查看结果
+							</li>
+							<li>
+								• 支持的几何类型: Point, LineString, Polygon, MultiPoint,
+								MultiLineString, MultiPolygon
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
