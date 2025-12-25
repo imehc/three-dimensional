@@ -4,6 +4,14 @@ module.exports = async function rspackPlugin(context, options) {
 		configureWebpack(config, isServer, { currentBundler }) {
 			return {
 				plugins: [new currentBundler.instance.DefinePlugin({})],
+				module: {
+					rules: [
+						{
+							resourceQuery: /raw/,
+							type: "asset/source",
+						},
+					],
+				},
 			};
 		},
 	};
