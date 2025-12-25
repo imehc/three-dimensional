@@ -1,14 +1,17 @@
 import {
+	Color,
 	EllipsoidTerrainProvider,
+	GeoJsonDataSource,
 	UrlTemplateImageryProvider,
 	Viewer,
 } from "cesium";
 import CesiumNavigation, {
 	type NavigationOptions,
 } from "cesium-navigation-es6";
+import shp from "shpjs";
 
 /**
- * WKT互转GEOJSON
+ * 加载SHP
  *
  * @param el - 用于承载 Cesium Viewer 的 HTML 元素
  * @returns 返回配置好的 Viewer 实例
@@ -35,7 +38,7 @@ export function initViewer(el: HTMLElement) {
 	});
 	viewer.imageryLayers.addImageryProvider(xyz);
 
-	// viewer.scene.globe.depthTestAgainstTerrain = true; // 启用深度检测
+	viewer.scene.globe.depthTestAgainstTerrain = true; // 启用深度检测
 
 	const options = {
 		enableCompass: true,
@@ -44,4 +47,22 @@ export function initViewer(el: HTMLElement) {
 	new CesiumNavigation(viewer, options);
 
 	return viewer;
+}
+
+export async function loadShpFile(viewer: Viewer) {
+	try {
+		// 使用完整URL - shpjs 需要完整的 URL
+		const baseUrl = window.location.origin;
+		const geojson = await shp(`${baseUrl}/cesium/05/shp2/唐家泊果园.shp`);
+		const dataSource = await GeoJsonDataSource.load(geojson, {
+			clampToGround: true, // 贴地显示
+			fill: Color.YELLOW.withAlpha(0.6), // 填充颜色
+		});
+		viewer.dataSources.add(dataSource);
+
+		viewer.flyTo(dataSource);
+	} catch (error) {
+		console.error("加载SHP失败:", error);
+		throw error;
+	}
 }

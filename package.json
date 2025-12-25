@@ -52,6 +52,7 @@
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
 		"react-error-boundary": "^6.0.0",
+		"shpjs": "^6.2.0",
 		"three": "^0.182.0",
 		"zustand": "^5.0.9"
 	},
@@ -67,6 +68,7 @@
 		"@types/geojson": "^7946.0.16",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
+		"@types/shpjs": "^3.4.7",
 		"@types/terraformer__wkt": "^2.0.3",
 		"@types/three": "^0.182.0",
 		"copy-webpack-plugin": "^13.0.1",

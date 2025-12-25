@@ -1,0 +1,212 @@
+---
+sidebar_position: 4
+title: 加载SHP
+tags: [Javascript]
+---
+
+import App from '@site/src/exmaples/web/cesium/basic/05';
+
+# 加载 SHP 文件
+
+本示例展示如何在 Cesium 中加载和展示 Shapefile（SHP）格式的矢量数据，通过 shpjs 库将 SHP 文件转换为 GeoJSON 格式，然后使用 Cesium 的 GeoJsonDataSource 进行可视化展示。
+
+<App />
+
+## 核心功能
+
+### Shapefile 格式简介
+
+Shapefile 是一种常用的地理空间矢量数据格式，广泛应用于 GIS 系统中。一个完整的 Shapefile 通常包含多个文件：
+
+- **.shp**：存储几何图形的主文件（必需）
+- **.shx**：存储图形索引的索引文件（必需）
+- **.dbf**：存储属性数据的 dBASE 表文件（必需）
+- **.prj**：存储坐标系统信息的投影文件（可选但推荐）
+
+### shpjs 库
+
+shpjs 是一个纯 JavaScript 库，可以在浏览器中解析 Shapefile 并将其转换为 GeoJSON 格式：
+
+```tsx
+import shp from "shpjs";
+
+// 加载 SHP 文件并转换为 GeoJSON
+const geojson = await shp("https://example.com/data/shapefile.shp");
+```
+
+## 关键代码
+
+### 加载 SHP 文件
+
+使用 shpjs 库加载 Shapefile 并转换为 GeoJSON（viewer.ts）：
+
+```tsx
+import shp from "shpjs";
+import { GeoJsonDataSource, Color } from "cesium";
+
+export async function loadShpFile(viewer: Viewer) {
+  try {
+    // 使用完整 URL - shpjs 需要完整的 URL 路径
+    const baseUrl = window.location.origin;
+    const geojson = await shp(`${baseUrl}/cesium/05/shp2/唐家泊果园.shp`);
+
+    // 加载 GeoJSON 数据源
+    const dataSource = await GeoJsonDataSource.load(geojson, {
+      clampToGround: true,              // 贴地显示
+      fill: Color.YELLOW.withAlpha(0.6), // 填充颜色（半透明黄色）
+    });
+
+    // 添加到场景
+    viewer.dataSources.add(dataSource);
+
+    // 相机飞行到数据位置
+    viewer.flyTo(dataSource);
+  } catch (error) {
+    console.error("加载SHP失败:", error);
+    throw error;
+  }
+}
+```
+
+### 初始化 Viewer
+
+```tsx
+export function initViewer(el: HTMLElement) {
+  const viewer = new Viewer(el, {
+    baseLayerPicker: false,
+    animation: false,
+    timeline: false,
+    // ... 禁用其他 UI 控件
+  });
+
+  // 使用自定义底图
+  const xyz = new UrlTemplateImageryProvider({
+    url: "//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg",
+  });
+  viewer.imageryLayers.addImageryProvider(xyz);
+
+  // 启用深度检测（重要：确保矢量数据正确遮挡）
+  viewer.scene.globe.depthTestAgainstTerrain = true;
+
+  return viewer;
+}
+```
+
+### GeoJsonDataSource 配置选项
+
+```tsx
+const dataSource = await GeoJsonDataSource.load(geojson, {
+  clampToGround: true,                    // 贴地显示（贴合地形）
+  stroke: Color.RED,                      // 边框颜色
+  strokeWidth: 2,                         // 边框宽度
+  fill: Color.YELLOW.withAlpha(0.6),     // 填充颜色
+  markerSize: 48,                         // 点标记大小
+  markerSymbol: '?',                      // 点标记符号
+  markerColor: Color.BLUE,                // 点标记颜色
+});
+```
+
+## 应用场景
+
+- **行政区划展示**：加载并展示省、市、县等行政区划边界
+- **地块管理**：展示土地、林地、农田等地块信息
+- **规划数据**：加载城市规划、土地利用规划等矢量数据
+- **环境监测**：展示污染区域、保护区、监测点等环境数据
+- **资源管理**：矿产资源、水资源等空间分布数据
+- **交通网络**：道路、铁路、管线等基础设施网络
+- **遗留数据利用**：将现有 GIS 系统的 Shapefile 数据在 Web 3D 场景中展示
+
+## 常见问题
+
+### CORS 跨域问题
+
+如果加载远程 SHP 文件时遇到 CORS 错误，需要确保：
+
+1. 服务器配置允许跨域访问（设置 `Access-Control-Allow-Origin` 响应头）
+2. 文件服务器支持 Range 请求头（shpjs 可能需要分块读取）
+3. 或者将 SHP 文件部署在同源服务器上
+
+### 文件编码问题
+
+Shapefile 的 DBF 属性表可能使用非 UTF-8 编码（如 GBK），导致中文属性显示乱码：
+
+```tsx
+// shpjs 支持指定编码
+const geojson = await shp("path/to/file.shp", "gbk");
+```
+
+### 坐标系不匹配
+
+Shapefile 可能使用不同的坐标系（如 CGCS2000、WGS84 投影坐标等），如果坐标系与 Cesium 的 WGS84 地理坐标系不一致，需要进行坐标转换。参考 **03-坐标系转换** 示例进行处理。
+
+### 大文件加载性能
+
+对于包含大量要素的 Shapefile：
+
+1. **简化几何图形**：使用 GIS 工具预先简化复杂的多边形
+2. **分块加载**：将大文件拆分为多个小文件按需加载
+3. **使用瓦片服务**：将矢量数据转换为矢量瓦片（如 MVT 格式）
+4. **LOD 策略**：根据视图距离加载不同精度的数据
+
+### 只加载了 .shp 文件
+
+shpjs 库会自动加载同名的 `.shx`、`.dbf`、`.prj` 文件，只需提供 `.shp` 文件的路径即可。确保这些文件在同一目录且文件名（除扩展名外）完全一致。
+
+## 样式自定义
+
+### 根据属性设置样式
+
+可以根据 GeoJSON 的属性数据动态设置样式：
+
+```tsx
+const dataSource = await GeoJsonDataSource.load(geojson);
+
+// 遍历所有实体，根据属性设置样式
+const entities = dataSource.entities.values;
+for (const entity of entities) {
+  // 假设 GeoJSON 有 type 属性
+  const type = entity.properties?.type?.getValue();
+
+  if (entity.polygon) {
+    entity.polygon.material = type === "农田"
+      ? Color.GREEN.withAlpha(0.6)
+      : Color.YELLOW.withAlpha(0.6);
+    entity.polygon.outlineColor = Color.BLACK;
+    entity.polygon.outlineWidth = 2;
+  }
+}
+
+viewer.dataSources.add(dataSource);
+```
+
+### 添加交互事件
+
+为加载的矢量数据添加点击事件：
+
+```tsx
+viewer.selectedEntityChanged.addEventListener((entity) => {
+  if (entity && entity.properties) {
+    console.log("选中实体属性:", entity.properties);
+    // 显示属性信息面板等...
+  }
+});
+```
+
+## 注意事项
+
+1. **文件完整性**：确保 .shp、.shx、.dbf 三个文件齐全且文件名一致
+2. **文件路径**：shpjs 要求使用完整 URL，建议使用 `${window.location.origin}` 拼接
+3. **坐标系统**：注意 Shapefile 的坐标系，必要时进行坐标转换
+4. **编码问题**：中文属性乱码时指定正确的编码（如 "gbk"）
+5. **CORS 配置**：确保服务器允许跨域访问 Shapefile 文件
+6. **性能优化**：大文件建议预处理简化或使用矢量瓦片服务
+7. **深度检测**：设置 `depthTestAgainstTerrain = true` 确保矢量数据正确遮挡
+8. **贴地显示**：使用 `clampToGround: true` 使矢量数据贴合地形
+
+## 参考资料
+
+- [shpjs GitHub 仓库](https://github.com/calvinmetcalf/shpjs)
+- [Cesium GeoJsonDataSource 文档](https://cesium.com/learn/cesiumjs/ref-doc/GeoJsonDataSource.html)
+- [Shapefile 格式规范](https://www.esri.com/content/dam/esrisites/sitecore-archive/Files/Pdfs/library/whitepapers/pdfs/shapefile.pdf)
+- [GeoJSON 规范](https://geojson.org/)
+- [Cesium Examples](https://github.com/jiawanlong/Cesium-Examples)
