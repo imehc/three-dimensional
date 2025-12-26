@@ -1,0 +1,413 @@
+---
+sidebar_position: 5
+title: 点线面图标与弹窗
+tags: [Javascript]
+---
+
+import App from '@site/src/exmaples/web/cesium/basic/06';
+
+# 点线面图标与弹窗
+
+本示例展示如何在 Cesium 中绘制基础几何图形（点、线、面、图标）以及实现自定义弹窗（Popup）和工具提示（Tooltip）。通过 dat.GUI 控制面板可以切换不同的示例类型，包括单个点、线、面、图标、大量图标、弹窗和工具提示。
+
+<App />
+
+## 核心功能
+
+### 基础几何图形
+
+Cesium 提供了多种实体类型用于绘制基础几何图形：
+
+- **Point**：点实体，可设置大小、颜色、边框等
+- **Polyline**：线实体，支持单线、多线、贴地等
+- **Polygon**：面实体，支持填充、拉伸、贴地等
+- **Billboard**：图标广告牌，始终面向相机
+
+### 自定义弹窗系统
+
+实现了两种自定义弹窗组件：
+
+- **Popup**：基于 DOM 的弹窗，支持关闭按钮和点击交互
+- **Tooltip**：基于 SVG 的工具提示，使用 Billboard 渲染
+
+## 关键代码
+
+### 绘制点实体
+
+使用 Point 实体绘制点标记（viewer.ts）：
+
+```tsx
+viewer.entities.add({
+  name: "点",
+  position: Cartesian3.fromDegrees(-95.166493, 39.9060534, 2000),
+  point: {
+    pixelSize: 5,           // 点的大小（像素）
+    color: Color.RED,       // 点的颜色
+    outlineColor: Color.WHITE,  // 边框颜色
+    outlineWidth: 2,        // 边框宽度
+  },
+  label: {
+    text: "点",
+    font: "14pt monospace",
+    outlineWidth: 2,
+  },
+});
+```
+
+### 绘制线实体
+
+使用 Polyline 实体绘制线段：
+
+```tsx
+viewer.entities.add({
+  name: "线",
+  polyline: {
+    positions: Cartesian3.fromDegreesArray([-77, 35, -80, 35, -90, 45]),
+    width: 3,               // 线宽
+    material: Color.BLUE,   // 线的颜色
+    clampToGround: false,   // 是否贴地
+  },
+});
+```
+
+### 绘制面实体
+
+使用 Polygon 实体绘制多边形：
+
+```tsx
+// 简单贴地面
+viewer.entities.add({
+  name: "最简单的贴地面",
+  polygon: {
+    hierarchy: Cartesian3.fromDegreesArray([
+      -115.0, 37.0, -115.0, 32.0, -107.0, 33.0, -102.0, 31.0, -102.0, 35.0,
+    ]),
+    material: Color.RED.withAlpha(0.5),
+  },
+});
+
+// 立体拉伸面
+viewer.entities.add({
+  name: "贴地围墙",
+  polygon: {
+    hierarchy: Cartesian3.fromDegreesArray([
+      -108.0, 42.0, -100.0, 42.0, -104.0, 40.0,
+    ]),
+    extrudedHeight: 50000.0,  // 拉伸高度
+    material: Color.GREEN,
+    closeTop: false,           // 不封顶
+    closeBottom: false,        // 不封底
+  },
+});
+```
+
+### 绘制图标
+
+使用 Billboard 实体绘制图标：
+
+```tsx
+viewer.entities.add({
+  position: Cartesian3.fromDegrees(-115.59777, 40.03883),
+  billboard: {
+    image: "/cesium/06/icon.png",
+    heightReference: HeightReference.CLAMP_TO_GROUND,  // 贴附地面
+    scaleByDistance: new NearFarScalar(2000000, 1.5, 8000000, 0.5),
+    scale: 1,
+    horizontalOrigin: HorizontalOrigin.CENTER,
+    verticalOrigin: VerticalOrigin.BOTTOM,
+    width: 32,
+    height: 32,
+  },
+});
+```
+
+### 大量图标性能优化
+
+使用 BillboardCollection 实现大量图标的高性能渲染：
+
+```tsx
+import { BillboardCollection } from "cesium";
+import { randomPoint } from "@turf/turf";
+
+function loadMultipleIcon(viewer: Viewer, count = 50000) {
+  const points = randomPoint(count, { bbox: [-180, -90, 180, 90] });
+  const billboardCollection = viewer.scene.primitives.add(
+    new BillboardCollection()
+  );
+
+  points.features.forEach((k) => {
+    const cor = k.geometry.coordinates;
+    billboardCollection.add({
+      scaleByDistance: new NearFarScalar(2000000, 1, 8000000, 0.1),
+      position: Cartesian3.fromDegrees(cor[0], cor[1]),
+      image: "/cesium/06/icon.png",
+      width: 32,
+      height: 32,
+    });
+  });
+}
+```
+
+### 自定义 Popup 弹窗
+
+实现基于 DOM 的交互式弹窗（popup.ts）：
+
+```tsx
+export class Popup {
+  private option: PopupOption;
+  private ctnMap: Record<string, [Cartesian3, HTMLDivElement]> = {};
+
+  constructor(option: PopupOption) {
+    this.option = option;
+  }
+
+  public add({ position, content, isClose = false }: PopupAddOption): string {
+    const id = `popup_${(((1 + Math.random()) * 0x10000) | 0).toString(16)}${this.id++}`;
+    const ctn = document.createElement("div");
+    ctn.className = `tw:absolute tw:z-[1000] tw:pointer-events-auto`;
+    ctn.style.transform = "translate(-50%, -100%)";
+    this.option.viewer.container.appendChild(ctn);
+
+    ctn.innerHTML = this.createHtml(content.header, content.content, isClose);
+    this.ctnMap[id] = [position, ctn];
+    this.render();
+
+    return id;
+  }
+
+  private render() {
+    for (const c in this.ctnMap) {
+      const element = this.ctnMap[c];
+      const pos = SceneTransforms.worldToWindowCoordinates(
+        this.option.viewer.scene,
+        element[0]
+      );
+      if (!pos.x || !pos.y) continue;
+
+      this.ctnMap[c][1].style.left = `${pos.x}px`;
+      this.ctnMap[c][1].style.top = `${pos.y - 20}px`;  // 显示在点上方
+    }
+  }
+}
+```
+
+### 自定义 Tooltip 工具提示
+
+实现基于 SVG 的高清工具提示（popup.ts）：
+
+```tsx
+export class Tooltip {
+  private dataSource: CustomDataSource;
+
+  constructor(opt: { viewer: Viewer } & Record<string, unknown>) {
+    this.viewer = opt.viewer;
+    this.dataSource = new CustomDataSource("tooltipname");
+    this.viewer.dataSources.add(this.dataSource);
+  }
+
+  add(option: {
+    position: Cartesian3;
+    header?: string;
+    content: string;
+    width?: number;
+  }) {
+    // 使用设备像素比提高清晰度
+    const scale = window.devicePixelRatio || 2;
+    const svgContent = this.createSVG(option, scale);
+    const data = `data:image/svg+xml,${encodeURIComponent(svgContent)}`;
+
+    const entity = this.dataSource.entities.add({
+      position: option.position,
+      billboard: {
+        image: data,
+        scale: 1 / scale,  // 缩小回原始大小
+        horizontalOrigin: HorizontalOrigin.CENTER,
+        verticalOrigin: VerticalOrigin.BOTTOM,
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      },
+    });
+
+    return { id: createGuid(), entity };
+  }
+}
+```
+
+### Popup 使用 Tailwind CSS
+
+Popup 使用 Tailwind CSS 实现现代化样式：
+
+```tsx
+private createHtml(header: string, content: string, isClose: boolean) {
+  return `
+    ${isClose ? '<div class="tw:absolute tw:top-2 tw:right-2 tw:cursor-pointer tw:text-gray-400 hover:tw:text-gray-600 tw:text-xl tw:leading-none bx-popup-close">×</div>' : ""}
+    <div class="tw:bg-white tw:rounded-lg tw:shadow-xl tw:p-2 tw:min-w-50 tw:max-w-75">
+      <div class="tw:font-bold tw:text-base tw:mb-2 tw:text-gray-800 tw:border-b tw:border-gray-200 tw:pb-1">
+        ${header}
+      </div>
+      <div class="tw:text-sm tw:text-gray-600 tw:space-y-1">
+        ${content}
+      </div>
+    </div>
+    <div class="tw:absolute tw:left-1/2 tw:-bottom-2 tw:-ml-2 tw:w-0 tw:h-0 tw:border-l-8 tw:border-r-8 tw:border-t-8 tw:border-l-transparent tw:border-r-transparent tw:border-t-white" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));"></div>
+  `;
+}
+```
+
+## 应用场景
+
+### 基础几何图形
+- **标注展示**：在地图上标注重要位置、建筑物、地标等
+- **区域规划**：绘制规划区域、保护区、禁飞区等
+- **路线导航**：展示道路、航线、管线等线状要素
+- **测量标记**：距离测量、面积测量的可视化展示
+
+### 大量图标
+- **设备监控**：展示成千上万个 IoT 设备、传感器位置
+- **POI 展示**：商铺、酒店、景点等兴趣点的大规模展示
+- **车辆追踪**：实时展示大量车辆、船舶、飞机位置
+- **数据可视化**：地理数据的密集型可视化展示
+
+### 弹窗和工具提示
+- **信息展示**：点击或悬停展示详细信息
+- **状态监控**：设备状态、传感器数据的实时展示
+- **属性查询**：查询地理要素的属性信息
+- **数据交互**：用户与地图数据的交互界面
+
+## 性能优化技巧
+
+### 大量图标优化
+
+1. **使用 BillboardCollection 而非多个 Entity**
+```tsx
+// ❌ 性能差 - 每个图标一个 Entity
+for (let i = 0; i < 10000; i++) {
+  viewer.entities.add({
+    position: positions[i],
+    billboard: { image: "icon.png" }
+  });
+}
+
+// ✅ 性能好 - 使用 BillboardCollection
+const collection = viewer.scene.primitives.add(new BillboardCollection());
+for (let i = 0; i < 10000; i++) {
+  collection.add({
+    position: positions[i],
+    image: "icon.png"
+  });
+}
+```
+
+2. **使用 scaleByDistance 实现 LOD**
+```tsx
+billboard: {
+  scaleByDistance: new NearFarScalar(
+    2000000, 1.0,    // 近距离：正常大小
+    8000000, 0.1     // 远距离：缩小到 0.1
+  )
+}
+```
+
+### 弹窗性能优化
+
+1. **使用设备像素比渲染高清 SVG**
+```tsx
+const scale = window.devicePixelRatio || 2;
+// 使用 2x 分辨率渲染，然后缩小显示
+billboard: {
+  scale: 1 / scale
+}
+```
+
+2. **及时清理不需要的弹窗**
+```tsx
+function removeEntities(viewer: Viewer) {
+  // 清除 Popup DOM 元素
+  const popups = viewer.container.querySelectorAll('[id^="popup_"]');
+  popups.forEach(popup => popup.remove());
+
+  // 清除 Tooltip DataSource
+  const dataSources = viewer.dataSources;
+  for (let i = dataSources.length - 1; i >= 0; i--) {
+    dataSources.remove(dataSources.get(i));
+  }
+}
+```
+
+## 常见问题
+
+### 点击事件冲突
+
+禁用 Cesium 默认的点击事件，避免与自定义交互冲突：
+
+```tsx
+viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+  ScreenSpaceEventType.LEFT_CLICK
+);
+viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+  ScreenSpaceEventType.LEFT_DOUBLE_CLICK
+);
+```
+
+### 弹窗位置偏移
+
+弹窗需要在点的上方显示，使用 `transform` 和偏移调整：
+
+```tsx
+// 在 render 方法中
+this.ctnMap[c][1].style.left = `${pos.x}px`;
+this.ctnMap[c][1].style.top = `${pos.y - 20}px`;  // 向上偏移 20px
+
+// CSS transform 居中
+ctn.style.transform = "translate(-50%, -100%)";
+```
+
+### 文字模糊问题
+
+SVG 工具提示文字模糊，使用设备像素比解决：
+
+```tsx
+// 使用 2x 或设备像素比渲染
+const scale = window.devicePixelRatio || 2;
+const svgWidth = width * scale;
+const fontSize = 14 * scale;
+
+// 然后缩小回原始大小
+billboard: {
+  scale: 1 / scale
+}
+```
+
+### 大量实体卡顿
+
+使用 Primitive 而非 Entity 提升性能：
+
+```tsx
+// Entity API (简单但慢)
+viewer.entities.add({ ... });
+
+// Primitive API (复杂但快)
+const collection = new BillboardCollection();
+viewer.scene.primitives.add(collection);
+collection.add({ ... });
+```
+
+## 注意事项
+
+1. **坐标系统**：确保使用正确的坐标系（WGS84 经纬度）
+2. **高度参考**：合理使用 `heightReference`（贴地/相对地形/绝对高度）
+3. **性能考虑**：大量实体使用 Primitive API 而非 Entity API
+4. **深度检测**：设置 `disableDepthTestDistance` 避免被地形遮挡
+5. **内存管理**：切换场景时及时清理不需要的实体和 DOM 元素
+6. **样式一致性**：Popup 使用 Tailwind CSS，Tooltip 使用 SVG
+7. **设备适配**：使用 `devicePixelRatio` 确保高清屏显示清晰
+8. **事件处理**：禁用默认事件避免冲突，自定义交互逻辑
+
+## 参考资料
+
+- [Cesium Entity API 文档](https://cesium.com/learn/cesiumjs/ref-doc/Entity.html)
+- [Cesium Primitive API 文档](https://cesium.com/learn/cesiumjs/ref-doc/Primitive.html)
+- [BillboardCollection 文档](https://cesium.com/learn/cesiumjs/ref-doc/BillboardCollection.html)
+- [Tailwind CSS 文档](https://tailwindcss.com/docs)
+- [SVG 规范](https://www.w3.org/Graphics/SVG/)
+- [Turf.js 文档](https://turfjs.org/)
+- [Cesium Examples](https://github.com/jiawanlong/Cesium-Examples)
